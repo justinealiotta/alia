@@ -1,0 +1,114 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   responsive.css — Alia FLUID scale (full-bleed at every size).
+
+   No breakpoints, no jumps. Every scaling property uses clamp() so the whole
+   surface — messages, media, voice, composer, nav, typing — grows CONTINUOUSLY
+   with the viewport, from a mobile floor (≈384px viewport) to a desktop ceiling
+   (≈1344px viewport). Below 384 it pins to the mobile value; above 1344 it pins
+   to the desktop value.
+
+   Each clamp is built as:
+     clamp(MOBILE, calc((1.4·MOBILE − 0.4·DESKTOP)px + ((DESKTOP−MOBILE)/9.6)vw), DESKTOP)
+   so the linear (vw) middle term equals MOBILE at 384px and DESKTOP at 1344px.
+
+   MOBILE values are the component bases (messages.css / voice.css /
+   composer-styles.css); DESKTOP values are the former ≥1200 tier. Media max-
+   widths live here (the inline caps were removed from the components).
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ═══ Identity column ═══════════════════════════════════════════════════════ */
+.avatar-col { width: clamp(46px, calc(30px + 4.17vw), 86px); }
+.avatar { width: clamp(40px, calc(27.2px + 3.33vw), 72px); height: clamp(40px, calc(27.2px + 3.33vw), 72px); }
+.avatar-sticky { align-items: flex-start; }
+.reply .avatar { width: clamp(28px, calc(19.2px + 2.29vw), 50px); height: clamp(28px, calc(19.2px + 2.29vw), 50px); }
+.col-footer { padding-left: clamp(54px, calc(38px + 4.17vw), 94px); }
+
+/* ═══ Type ══════════════════════════════════════════════════════════════════ */
+.name { font-size: clamp(13px, calc(11px + 0.52vw), 18px); }
+/* Text rides a constant ~56px step INSIDE the media column (media fills the
+   column; text is column-minus-step), then pins at its ceiling. Always lands
+   shorter than media, longer than the link preview, at every width. */
+.text { font-size: clamp(14px, calc(10px + 1.04vw), 24px); line-height: 1.5; max-width: clamp(232px, calc(100vw - 130px), 500px); }
+.reply .text { font-size: clamp(13px, calc(10.6px + 0.63vw), 19px); line-height: 1.45; max-width: clamp(168px, calc(100vw - 168px), 380px); }
+.link-ref { font-size: clamp(11px, calc(9.4px + 0.42vw), 15px); max-width: clamp(200px, calc(96px + 27.083vw), 460px); }
+.reply .link-ref { max-width: clamp(160px, calc(88px + 18.75vw), 340px); }
+.edited { font-size: clamp(11px, calc(10.2px + 0.21vw), 13px); }
+.replies-toggle { font-size: clamp(11px, calc(9.4px + 0.42vw), 15px); }
+.act-btn { font-size: clamp(12px, calc(11.2px + 0.21vw), 14px); }
+
+/* ═══ Media ═════════════════════════════════════════════════════════════════ */
+/* Media FILLS its column on mobile/tablet (calc(100vw-74px) always exceeds the
+   column, so width:100% clamps it to the column edge), then settles to a fixed
+   cap on desktop. Editorial images only — link previews + gifs stay capped. */
+.img-with-save { max-width: clamp(280px, calc(100vw - 74px), 560px); }
+.imgs-stack { max-width: clamp(280px, calc(100vw - 74px), 560px); }
+.img-wrap.link-img { max-width: clamp(200px, calc(96px + 27.08vw), 460px); }
+.gif-wrap { max-width: clamp(180px, calc(100px + 20.83vw), 380px); }
+.reply .img-wrap { max-width: clamp(180px, calc(100vw - 74px), 420px); }
+.reply .img-wrap.link-img { max-width: clamp(160px, calc(88px + 18.75vw), 340px); }
+
+/* ═══ Hearts ════════════════════════════════════════════════════════════════ */
+.heart-zone { padding-top: clamp(7px, calc(5px + 0.521vw), 12px); padding-bottom: clamp(2px, calc(1.2px + 0.208vw), 4px); }
+.heart-btn { width: clamp(30px, calc(22px + 2.08vw), 50px); height: clamp(30px, calc(22px + 2.08vw), 50px); }
+.heart-btn svg { width: clamp(22px, calc(17.2px + 1.25vw), 34px); height: clamp(22px, calc(17.2px + 1.25vw), 34px); }
+/* Floating hearts: the layer carries a fluid font-size; floater offsets + sizes
+   are emitted in em (makeFloater) so they grow with it from mobile → desktop. */
+.msg-hearts { font-size: clamp(16px, calc(12px + 1.042vw), 26px); right: 0.875em; bottom: 1.875em; width: 4em; }
+
+/* ═══ Orbit cluster ═════════════════════════════════════════════════════════
+   The strip carries a fluid font-size; orb size (1em) + every slot offset
+   (--tx/--ty/--fx… emitted in em by OrbitStrip) scale with it continuously. */
+.orbit-strip { font-size: clamp(28px, calc(20.8px + 1.875vw), 46px); height: 1.857em; margin-top: clamp(10px, calc(7.6px + 0.625vw), 18px); }
+.orb { width: 1em; height: 1em; }
+
+/* ═══ Voice (canonical component — feed + composer atom) ════════════════════ */
+.voice { max-width: clamp(280px, calc(48px + 60.42vw), 860px); gap: clamp(10px, calc(8.4px + 0.42vw), 14px); }
+.voice-row { gap: clamp(14px, calc(11.6px + 0.63vw), 20px); }
+.play-btn { width: clamp(28px, calc(16.8px + 2.92vw), 56px); height: clamp(28px, calc(16.8px + 2.92vw), 56px); }
+.play-btn svg { width: clamp(18px, calc(11.6px + 1.67vw), 38px); height: clamp(18px, calc(11.6px + 1.67vw), 38px); }
+.wave { height: clamp(26px, calc(14px + 3.13vw), 56px); }
+.wave i { width: clamp(1.6px, calc(1.04px + 0.146vw), 3px); min-width: clamp(1.6px, calc(1.04px + 0.146vw), 3px); max-width: clamp(1.6px, calc(1.04px + 0.146vw), 3px); }
+.dur { font-size: clamp(10px, calc(8.4px + 0.42vw), 14px); }
+.voice .transcript { font-size: clamp(13px, calc(9.8px + 0.83vw), 21px); line-height: 1.5; }
+
+/* ═══ Phrase card ═══════════════════════════════════════════════════════════ */
+.phrase-card { font-size: clamp(48px, calc(32px + 4.17vw), 88px); padding-left: clamp(54px, calc(38px + 4.17vw), 94px); padding-right: clamp(12px, calc(5.3px + 1.77vw), 32px); }
+
+/* ═══ Message-level send-gap spacing (top-level posts only) ══════════════════
+   Fluid version of room.css's data-gap margins — same clamp() formula as the
+   rest of the surface, so the gaps grow with type & media from the mobile floor
+   to the desktop ceiling. MOBILE → DESKTOP per tier:
+     tight 8→16 · short 44→88 · medium 88→176 · long 140→280. */
+.msg[data-gap='tight'],  .phrase-card[data-gap='tight']  { margin-top: clamp(8px,   calc(4.8px  + 0.833vw),  16px); }
+.msg[data-gap='short'],  .phrase-card[data-gap='short']  { margin-top: clamp(44px,  calc(26.4px + 4.583vw),  88px); }
+.msg[data-gap='medium'], .phrase-card[data-gap='medium'] { margin-top: clamp(88px,  calc(52.8px + 9.167vw),  176px); }
+.msg[data-gap='long'],   .phrase-card[data-gap='long']   { margin-top: clamp(140px, calc(84px   + 14.583vw), 280px); }
+
+/* ═══ Composer ══════════════════════════════════════════════════════════════ */
+.composer { padding-top: clamp(12px, calc(9.6px + 0.63vw), 18px); padding-left: clamp(14px, calc(6.4px + 1.88vw), 32px); padding-right: clamp(14px, calc(6.4px + 1.88vw), 32px); padding-bottom: clamp(16px, calc(11.2px + 1.25vw), 28px); gap: clamp(8px, calc(4.8px + 0.83vw), 16px); }
+.composer-input { font-size: clamp(14px, calc(11.6px + 0.63vw), 20px); line-height: clamp(26px, calc(21.6px + 1.04vw), 36px); min-height: clamp(26px, calc(21.6px + 1.04vw), 36px); }
+.stream { font-size: clamp(14px, calc(11.6px + 0.63vw), 20px); line-height: clamp(26px, calc(21.6px + 1.04vw), 36px); }
+.icon-btn { width: clamp(32px, calc(23.2px + 2.29vw), 54px); height: clamp(32px, calc(23.2px + 2.29vw), 54px); }
+.icon-btn svg { width: clamp(22px, calc(16.8px + 1.35vw), 35px); height: clamp(22px, calc(16.8px + 1.35vw), 35px); }
+.icon-btn.gif { font-size: clamp(10px, calc(7.6px + 0.63vw), 16px); font-weight: 600; }
+.atom-photo img, .atom-photo video { width: clamp(56px, calc(38.4px + 4.58vw), 100px) !important; }
+.atom-gif img { width: clamp(36px, calc(-29.6px + 17.08vw), 200px) !important; }
+.atom-linkref .lr-label { font-size: clamp(11px, calc(9.4px + 0.42vw), 15px); }
+.rec-live .wave { height: clamp(26px, calc(18.8px + 1.88vw), 44px); }
+.rec-elapsed { font-size: clamp(13px, calc(12.2px + 0.21vw), 15px); }
+.rec-dot { width: clamp(6px, calc(3.5px + 0.63vw), 12px); height: clamp(6px, calc(3.5px + 0.63vw), 12px); }
+
+/* ═══ Typing indicator ══════════════════════════════════════════════════════
+   padding-left tracks the avatar column exactly so the bubble always sits
+   flush under the message name / text: msg-pad(8) + avatar-col + gap(8). */
+.typing-row { padding-left: clamp(62px, calc(46px + 4.17vw), 102px); }
+.typing-bubble { gap: clamp(5px, calc(3.4px + 0.42vw), 9px); }
+.typing-bubble .dot { width: clamp(5px, calc(3.4px + 0.42vw), 9px); height: clamp(5px, calc(3.4px + 0.42vw), 9px); }
+
+/* ═══ Bottom nav + thin handle ══════════════════════════════════════════════ */
+.nav-handle { height: clamp(12px, calc(10.4px + 0.42vw), 16px); }
+.nav-bar { height: clamp(72px, calc(59.2px + 3.33vw), 104px); padding-left: clamp(28px, calc(19.2px + 2.08vw), 48px); padding-right: clamp(28px, calc(19.2px + 2.08vw), 48px); padding-bottom: clamp(14px, calc(10.8px + 0.83vw), 22px); }
+.nav-btn { height: clamp(44px, calc(34.4px + 2.5vw), 68px); }
+.nav-btn .nav-av { width: clamp(30px, calc(22px + 2.08vw), 50px); height: clamp(30px, calc(22px + 2.08vw), 50px); }
+.nav-btn svg { width: clamp(28px, calc(23.2px + 1.25vw), 40px); height: clamp(28px, calc(23.2px + 1.25vw), 40px); }
+.nav-btn .label { font-size: clamp(22px, calc(17.2px + 1.25vw), 34px); }

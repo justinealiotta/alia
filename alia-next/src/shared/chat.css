@@ -1,0 +1,76 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   shared/chat.css — styles for the conversational chat affordances shared by
+   the Alia-led pages (Profile, onboarding, etc.): quick-reply option buttons
+   and the small inline profile avatar. Loaded alongside messages.css.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Typing indicator (shared by every Alia-led / chat page) ─────────────── */
+.typing-row {
+  display: flex; align-items: center;
+  padding: 4px 18px 8px 62px;
+  opacity: 0; transform: translateY(4px);
+  transition: opacity 240ms ease, transform 240ms ease;
+}
+.typing-row.show,
+.typing-row.in { opacity: 0.7; transform: translateY(0); }
+.typing-bubble { display: inline-flex; align-items: center; gap: 5px; padding: 4px 0; background: transparent; }
+.typing-bubble .dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--fg); opacity: 0.55;
+  animation: aliaTypingPulse 1.2s infinite ease-in-out;
+}
+.typing-bubble .dot:nth-child(2) { animation-delay: 0.18s; }
+.typing-bubble .dot:nth-child(3) { animation-delay: 0.36s; }
+@keyframes aliaTypingPulse {
+  0%, 60%, 100% { transform: translateY(0);    opacity: 0.35; }
+  30%           { transform: translateY(-3px); opacity: 1; }
+}
+
+/* ── Quick-reply option buttons (inside an Alia message) ─────────────────── */
+.opt-btns {
+  display: flex; flex-direction: column; gap: 8px;
+  align-items: flex-start; margin-top: 12px;
+}
+.opt-btn {
+  background: var(--fg); color: #000;
+  border: 0; border-radius: 2px;
+  padding: clamp(11px, calc(10.4px + 0.31vw), 14px) clamp(16px, calc(13.6px + 0.63vw), 22px);
+  font-size: clamp(14px, calc(12.8px + 0.31vw), 17px); font-weight: 500;
+  letter-spacing: -0.005em; white-space: nowrap;
+  cursor: pointer; width: auto;
+  transition: background 160ms ease, transform 120ms ease, opacity 160ms ease;
+}
+.opt-btn:hover { background: rgba(255, 255, 255, 0.88); }
+.opt-btn:active { transform: translateY(0.5px); }
+.opt-btn:disabled { cursor: default; opacity: 0.4; }
+
+/* ── Sent profile avatar (onboarding) — circular crop in the message body ── */
+.msg-avatar {
+  width: clamp(132px, calc(111.2px + 5.42vw), 184px); height: clamp(132px, calc(111.2px + 5.42vw), 184px);
+  border-radius: 50%; overflow: hidden; background: #0a0a0a;
+}
+.msg-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ── Small inline profile avatar ─────────────────────────────────────────── */
+.prof-av-sm { width: clamp(40px, calc(33.6px + 1.67vw), 56px); height: clamp(40px, calc(33.6px + 1.67vw), 56px); border-radius: 50%; overflow: hidden; background: #0a0a0a; }
+.prof-av-sm img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 14%; display: block; }
+
+/* ── "enter alia" primary button (OTP returning-session sign-in) ─────────── */
+.enter-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  margin-top: 2px; padding: clamp(11px, calc(10.4px + 0.31vw), 14px) clamp(16px, calc(13.6px + 0.63vw), 22px); width: auto;
+  background: var(--fg); color: #000;
+  border: 0; border-radius: 2px;
+  font-size: clamp(14px, calc(12.8px + 0.31vw), 17px); font-weight: 500; letter-spacing: -0.005em;
+  cursor: pointer; -webkit-tap-highlight-color: transparent;
+  transition: background 160ms ease, transform 120ms ease;
+}
+.enter-btn:hover { background: rgba(255, 255, 255, 0.88); }
+.enter-btn:active { transform: translateY(0.5px); }
+.enter-btn[disabled] { cursor: default; }
+.enter-btn .spin {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px solid rgba(0, 0, 0, 0.22); border-top-color: #000;
+  animation: enterSpin 0.7s linear infinite;
+}
+@keyframes enterSpin { to { transform: rotate(360deg); } }

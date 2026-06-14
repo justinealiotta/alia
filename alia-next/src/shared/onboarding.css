@@ -1,0 +1,52 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   shared/onboarding.css — styles for the invite/onboarding flows (P2P
+   Onboarding, Casting Onboarding): the friend invite avatar, the one-click
+   "enter alia" login card, and the under-21 recovery row. Loaded alongside
+   messages.css / chat.css.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* Incoming friend (inviter) avatar — frames the outfit, not a tight face crop */
+.msg .avatar img.friend { object-position: 50% 18%; }
+
+/* ── One-click login card ("enter alia") ─────────────────────────────────── */
+.login-card { width: clamp(248px, calc(203.2px + 11.67vw), 360px); border-radius: 2px; background: #0c0c0c; overflow: hidden; }
+.login-btn {
+  width: 100%; border: 0; background: var(--fg); color: #000; cursor: pointer; padding: clamp(15px, calc(13px + 0.52vw), 20px) 0;
+  font-size: clamp(15px, calc(13.8px + 0.31vw), 18px); font-weight: 600; letter-spacing: -0.005em;
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+  transition: background 160ms ease, gap 160ms ease;
+}
+.login-btn:hover { background: #fff; gap: 13px; }
+.login-btn:active { transform: translateY(0.5px); }
+.login-btn:disabled { cursor: default; opacity: 0.55; }
+.login-btn svg { transition: transform 160ms ease; }
+.login-btn:hover svg { transform: translateX(2px); }
+
+/* ── Recovery row (under-21 / edit) — replaces the composer ──────────────── */
+.soft-row { display: flex; padding: 12px 14px 16px; background: #000; }
+.soft-row button {
+  flex: 1; border-radius: 2px; cursor: pointer; padding: clamp(13px, calc(11.4px + 0.42vw), 17px) 0; background: transparent;
+  border: 1px solid var(--fg-25); color: var(--fg-70); font-size: clamp(14px, calc(12.8px + 0.31vw), 17px); font-weight: 500;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  transition: color 160ms ease, border-color 160ms ease;
+}
+.soft-row button:hover { color: var(--fg); border-color: var(--fg); }
+
+/* ── Confirm row (yes / fix it) — Casting Onboarding ─────────────────────── */
+.confirm-row { display: flex; gap: 10px; padding: 12px 14px 16px; background: #000; }
+.confirm-row button {
+  flex: 1; border-radius: 2px; cursor: pointer; padding: clamp(13px, calc(11.4px + 0.42vw), 17px) 0;
+  font-size: clamp(14px, calc(12.8px + 0.31vw), 17px); font-weight: 600; letter-spacing: -0.005em;
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+.confirm-row .edit { flex: 0 0 auto; padding: clamp(13px, calc(11.4px + 0.42vw), 17px) clamp(20px, calc(16.8px + 0.83vw), 28px); background: transparent; border: 1px solid var(--fg-25); color: var(--fg-70); font-weight: 500; }
+.confirm-row .edit:hover { color: var(--fg); border-color: var(--fg); }
+.confirm-row .yes { background: var(--fg); border: 0; color: #000; }
+.confirm-row .yes:hover { background: #fff; }
+
+/* ── Pre-pulled profile card (Casting Onboarding) ────────────────────────── */
+.prof-card { display: flex; flex-direction: column; }
+.prof-card .prof-av { width: clamp(60px, calc(24.8px + 2.92vw), 88px); height: clamp(60px, calc(24.8px + 2.92vw), 88px); border-radius: 50%; overflow: hidden; background: #0a0a0a; flex-shrink: 0; margin-bottom: 14px; }
+.prof-card .prof-av img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 14%; display: block; }
+

@@ -1,0 +1,125 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   voice.css  ·  Alia — Voice Message Component
+   Single canonical source. The composer (and every other page) hosts this
+   component — it does not own it.
+
+   Used in: Room feed, Application feed, Casting Onboarding, P2P Onboarding,
+            P2P Referral, OTP, and the Composer (as .atom-voice).
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ── Shell ───────────────────────────────────────────────────────────────── */
+/* .voice = feed / standalone context                                        */
+.voice {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: transparent;
+  padding: 0;
+  max-width: 280px;
+}
+
+/* ── Play row ────────────────────────────────────────────────────────────── */
+.voice-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ── Play / pause — plain icon, no chrome ───────────────────────────────── */
+.play-btn {
+  width: 28px; height: 28px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 0; padding: 0;
+  color: var(--fg); cursor: pointer; flex-shrink: 0;
+}
+
+/* ── Waveform bars ───────────────────────────────────────────────────────── */
+.wave {
+  display: flex; align-items: center; gap: 4px;
+  flex: 0 0 auto; height: 26px;
+}
+.wave i {
+  display: block; flex: 0 0 auto;
+  width: 1.6px; min-width: 1.6px; max-width: 1.6px; height: 100%;
+  background: var(--fg); opacity: 0.30; border-radius: 1px;
+  transform-origin: center; transform: scaleY(var(--h, 0.5));
+  transition: opacity 180ms ease;
+}
+.wave i.on { opacity: 1; }
+.wave i.off { opacity: 0; transform: scaleY(0); }
+
+/* ── Duration ────────────────────────────────────────────────────────────── */
+.dur {
+  font-size: 10px; letter-spacing: 0.08em; color: var(--fg-55);
+  flex-shrink: 0; font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+
+/* ── Transcript — always shows in full, never truncated ─────────────────── */
+.voice .transcript,
+.seg-voice .transcript,
+.atom-voice .av-tr {
+  margin: 0; padding: 0;
+  font-size: 13px; line-height: 1.45;
+  color: var(--fg); font-weight: 300;
+  letter-spacing: -0.005em;
+  white-space: pre-wrap; word-break: break-word;
+  text-wrap: pretty;
+  max-width: 36ch;
+}
+
+/* ── Playback animation ─────────────────────────────────────────────────── */
+.voice.playing .wave i,
+.seg-voice.playing .wave i,
+.atom-voice.playing .wave i {
+  animation: barPulse 1100ms ease-in-out infinite;
+  animation-delay: var(--d, 0ms);
+}
+@keyframes barPulse {
+  0%, 100% { transform: scaleY(calc(var(--h, 0.5) * 0.45)); }
+  50%       { transform: scaleY(var(--h, 1)); }
+}
+
+/* ── Karaoke highlight ───────────────────────────────────────────────────── */
+/* Idle: full white. Playing: unsaid words dim; spoken / active word lifts. */
+.transcript .w,
+.av-tr .w { transition: color 130ms ease; }
+
+.voice.playing .transcript .w,
+.seg-voice.playing .transcript .w,
+.atom-voice.playing .transcript .w,
+.atom-voice.playing .av-tr .w { color: var(--fg-40); }
+
+.voice.playing .transcript .w.spoken,
+.voice.playing .transcript .w.active,
+.seg-voice.playing .transcript .w.spoken,
+.seg-voice.playing .transcript .w.active,
+.atom-voice.playing .transcript .w.spoken,
+.atom-voice.playing .transcript .w.active,
+.atom-voice.playing .av-tr .w.spoken,
+.atom-voice.playing .av-tr .w.active { color: var(--fg); }
+
+/* ── Recording surface ───────────────────────────────────────────────────── */
+/* The recording row must center-align so the dot sits on the same midline
+   as the wave. Override the base .composer align-items: flex-end here.    */
+.composer.cm-rec { align-items: center; }
+
+.rec-dot {
+  display: block; flex-shrink: 0; align-self: center;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--fg);
+  animation: recDotPulse 900ms ease-in-out infinite;
+}
+@keyframes recDotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.3; transform: scale(0.65); }
+}
+
+
+/* Same component, hosted inside the composer stream.
+   Composer adds its own margin/padding-left (in composer-styles.css).      */
+.atom-voice {
+  display: inline-flex; flex-direction: column; align-items: flex-start;
+  gap: 10px; max-width: 280px; background: transparent;
+}
+/* .voice-row, .play-btn, .wave, .dur, .transcript — all inherited from
+   the canonical rules above. No overrides needed. */
