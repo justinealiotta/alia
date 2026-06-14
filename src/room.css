@@ -1,0 +1,126 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   room.css — Room-SPECIFIC screen styling only.
+   The shared shell (tokens, resets, .app-root, .screen, .feed, shake, enter
+   animations) lives in shared/shell.css. This file carries what's unique to
+   the Room: phrase cards, reply/edit dimming, the GIF sheet, the media
+   lightbox, the bottom-nav-replaces-composer behaviour, and light-mode details.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Reply / edit dimming ────────────────────────────────────────────────── */
+.msg, .typing-row { transition: opacity 200ms ease; }
+
+/* Room's composer + bottom nav are position:absolute, so the feed needs bottom
+   clearance so content doesn't hide behind them. (Chat pages keep the composer
+   in normal flow and use the small shared default.) */
+.app-root#room .feed { padding-bottom: 112px; }
+@media (min-width: 768px) { .app-root#room .feed { padding: 26px 0 128px; } }
+@media (min-width: 1200px) { .app-root#room .feed { padding: 36px 0 148px; } }
+.feed.replying .msg,
+.feed.replying .typing-row,
+.feed.editing .msg,
+.feed.editing .typing-row { opacity: 0.28; }
+/* Tier 1 — a top-level message acted on directly: fully bright. */
+.feed.replying .msg.msg-target,
+.feed.editing .msg.msg-target { opacity: 1; }
+
+/* When the thing being replied-to / edited is a REPLY, spotlight three tiers:
+   the reply itself stays bright, its parent message + sibling replies drop to a
+   mid level, and everything else stays at the deep 0.28 dim.
+   The context message must NOT be group-dimmed (opacity stays 1) — otherwise the
+   target reply inside it could never exceed its parent's opacity — so we dim its
+   individual parts instead. */
+.feed.replying .msg.msg-context,
+.feed.editing .msg.msg-context { opacity: 1; }
+.msg.msg-context .msg-inner,
+.msg.msg-context > .msg-actions,
+.msg.msg-context .col-footer > :not(.replies),
+.msg.msg-context .replies-toggle,
+.msg.msg-context .reply { opacity: 0.55; transition: opacity 200ms ease; }
+/* Tier 1 (reply level) — the specific reply being acted on: fully bright. */
+.msg.msg-context .reply.reply-target { opacity: 1; }
+
+/* ── Message-level spacing by send-time gap ───────────────────────────────────
+   TOP-LEVEL POSTS ONLY. Each post opens vertical air proportional to the
+   minutes since the previous post's backend send timestamp (tier resolved in
+   utils.ts::gapTier, applied as data-gap). Replies are untouched — they keep
+   the fixed 14px rhythm of .replies-list.
+
+   These are the MOBILE-floor bases; responsive.css scales them up fluidly with
+   clamp() so the gaps grow with the rest of the surface (type, media, avatars).
+   Steps are deliberately non-linear: a burst sits almost grouped, a long lull
+   opens a real break in the page. */
+.msg[data-gap='tight'],  .phrase-card[data-gap='tight']  { margin-top: 8px; }   /* <5 min   — grouped burst   */
+.msg[data-gap='short'],  .phrase-card[data-gap='short']  { margin-top: 44px; }  /* 5–14 min — clear separation */
+.msg[data-gap='medium'], .phrase-card[data-gap='medium'] { margin-top: 88px; }  /* 15–59 min — a real pause     */
+.msg[data-gap='long'],   .phrase-card[data-gap='long']   { margin-top: 140px; } /* 60+ min  — a break in the day */
+
+/* ── Phrase card — 24h ephemeral text ────────────────────────────────────── */
+.phrase-card {
+  padding: 20px 12px 20px 62px;
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
+  font-size: 48px; font-weight: 400;
+  color: #ffffff; line-height: 1.3;
+  letter-spacing: -0.01em; text-align: left; text-wrap: pretty;
+}
+
+/* ── GIF picker sheet (reply mode) ───────────────────────────────────────── */
+.gif-sheet {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: #000; z-index: 40; padding: 8px 8px 24px;
+  transform: translateY(100%);
+  transition: transform 300ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  max-height: 72%; display: flex; flex-direction: column;
+}
+.gif-sheet.open { transform: translateY(0); }
+.gif-search-wrap { display: flex; align-items: center; gap: 8px; padding: 10px 6px 12px; flex-shrink: 0; }
+.gif-search-icon { color: rgba(255, 255, 255, 0.38); flex-shrink: 0; display: flex; align-items: center; }
+.gif-search {
+  flex: 1; background: #000; border: none; padding: 6px 0;
+  color: #fff; font-size: 13px; letter-spacing: 0.02em; caret-color: #fff;
+}
+.gif-search:focus { outline: none; }
+.gif-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px; overflow-y: auto; scrollbar-width: none; }
+.gif-grid::-webkit-scrollbar { display: none; }
+.gif-cell { overflow: hidden; background: #111; border: 0; padding: 0; cursor: pointer; position: relative; }
+.gif-cell img { width: 100%; height: auto; display: block; }
+.gif-backdrop {
+  position: absolute; inset: 40px 0 0 0; background: rgba(0, 0, 0, 0.45);
+  z-index: 39; opacity: 0; pointer-events: none; transition: opacity 240ms ease;
+}
+.gif-backdrop.open { opacity: 1; pointer-events: auto; }
+
+/* ── Media lightbox ──────────────────────────────────────────────────────── */
+.lightbox {
+  position: absolute; inset: 0; background: #000; z-index: 80;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity 240ms ease; cursor: pointer;
+}
+.lightbox.open { opacity: 1; pointer-events: auto; }
+.lightbox-img {
+  max-width: 100%; max-height: 100%; object-fit: contain; display: block;
+  transform: scale(0.92); opacity: 0;
+  transition: transform 300ms cubic-bezier(0.2, 0.8, 0.2, 1), opacity 240ms ease;
+  pointer-events: none;
+}
+.lightbox.open .lightbox-img { transform: scale(1); opacity: 1; }
+.lightbox.avatar-mode .lightbox-img { border-radius: 0; }
+
+/* ── Bottom nav REPLACES the composer ─────────────────────────────────────── */
+.nav-bar.open ~ .composer-wrap {
+  transform: translateY(110%);
+  opacity: 0;
+  pointer-events: none;
+}
+.nav-handle { height: 12px; }
+.composer-wrap .composer { padding-bottom: 18px; }
+
+/* ── Nested replies (reply-to-reply threads under their parent) ──────────── */
+.reply .replies-list.nested {
+  margin-top: 12px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+
+/* ── Light-mode details (token overrides come from light-mode.css) ───────── */
+html.light svg[data-icon="send"] path:last-child { stroke: #fff !important; }
+html.light .avatar { background: transparent !important; }
+html.light .phrase-card { color: #000 !important; }
