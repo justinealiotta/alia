@@ -10,12 +10,13 @@
    ─────────────────────────────────────────────────────────────────────────── */
 
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import type { FeedEntry, MessageEntry, PhraseEntry } from './types';
+import type { FeedEntry, MessageEntry } from './types';
 import { isPhrase } from './types';
 import { blockKind, gapClass, gapTier } from './utils';
 import type { GapTier } from './utils';
 import { Icon } from './icons';
 import MessageBlock, { MediaOpen } from './MessageBlocks';
+import PhraseCard from './PhraseCard';
 import OrbitStrip from './OrbitStrip';
 import { useHearts, HeartZone, HeartFloaterLayer } from './Hearts';
 import TypingIndicator from './TypingIndicator';
@@ -277,20 +278,7 @@ function Message({
   );
 }
 
-/* ── Phrase card ─────────────────────────────────────────────────────────── */
-function PhraseCard({ entry, gap }: { entry: PhraseEntry; gap: GapTier | null }) {
-  const lines = (entry.phrase || '').split('\n');
-  return (
-    <div className="phrase-card" data-gap={gap || undefined}>
-      {lines.map((l, i) => (
-        <React.Fragment key={i}>
-          {l}
-          {i < lines.length - 1 ? <br /> : null}
-        </React.Fragment>
-      ))}
-    </div>
-  );
-}
+/* ── Phrase card — see PhraseCard.tsx (24h ephemeral big text) ────────────── */
 
 /* ── Feed ────────────────────────────────────────────────────────────────── */
 /* ── Feed ────────────────────────────────────────────────────────────────── */
@@ -359,7 +347,7 @@ export default function AliaMessages({ feed, mode, onReply, onEdit, onUnsend, on
         prevTs = (e as any).ts ?? prevTs;
         if (isPhrase(e)) {
           prevAuthor = null;
-          return <PhraseCard key={e.id || `phrase-${i}`} entry={e} gap={gap} />;
+          return <PhraseCard key={e.id || `phrase-${i}`} phrase={e.phrase} ts={e.ts} gap={gap} />;
         }
         const msg = e as MessageEntry;
         const node = (
