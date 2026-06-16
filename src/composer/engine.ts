@@ -75,10 +75,10 @@ export async function createAliaComposer(
     { Selection, TextSelection },
     { GapCursor },
   ] = await Promise.all([
-    import('https://esm.sh/@tiptap/core@2'),
-    import('https://esm.sh/@tiptap/starter-kit@2'),
-    import('https://esm.sh/@tiptap/pm@2/state'),
-    import('https://esm.sh/@tiptap/pm@2/gapcursor'),
+    import(/* webpackIgnore: true */ 'https://esm.sh/@tiptap/core@2'),
+    import(/* webpackIgnore: true */ 'https://esm.sh/@tiptap/starter-kit@2'),
+    import(/* webpackIgnore: true */ 'https://esm.sh/@tiptap/pm@2/state'),
+    import(/* webpackIgnore: true */ 'https://esm.sh/@tiptap/pm@2/gapcursor'),
   ]);
 
   /* ── 2. Helpers ──────────────────────────────────────────────────────── */

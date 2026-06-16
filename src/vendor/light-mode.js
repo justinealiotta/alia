@@ -39,3 +39,6 @@
     obs.observe(document.body, { childList: true, subtree: true });
   });
 })();
+
+/* Mark as an ES module so it can be `import()`-ed for side-effects (no runtime change). */
+export {};
