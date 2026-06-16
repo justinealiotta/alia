@@ -86,7 +86,7 @@ function Lightbox({ src, avatar, onClose }: { src: string | null; avatar: boolea
 }
 
 export default function Room() {
-  const [feed, setFeed] = useState<FeedEntry[]>(() => seedIds(FEED as any));
+  const [feed, setFeed] = useState<FeedEntry[]>(() => seedIds(FEED as any) as FeedEntry[]);
   const [mode, setMode] = useState<ReplyMode>({ kind: 'idle' });
   const [editPreload, setEditPreload] = useState<ComposerItem[] | null>(null);
   const [navOpen, setNavOpen] = useState(false);

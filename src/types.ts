@@ -63,4 +63,13 @@ export type ComposerItem =
   | { type: 'gif'; src: string }
   | { type: 'linkref'; url: string; platform?: string; label: string };
 
-export type ComposerMode = 'room' | 'reply' | 'edit';
+export type ComposerMode =
+  | 'room'
+  | 'reply'
+  | 'edit'
+  | 'application'
+  | 'casting-onboarding'
+  | 'otp'
+  | 'p2p-onboarding'
+  | 'p2p-referral'
+  | 'profile';

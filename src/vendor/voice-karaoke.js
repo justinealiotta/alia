@@ -95,3 +95,6 @@
 
   window.VoiceKaraoke = { wrapWords, start, pause, stop, clear };
 })();
+
+/* Mark as an ES module so it can be `import()`-ed for side-effects (no runtime change). */
+export {};

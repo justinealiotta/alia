@@ -14,8 +14,8 @@ export const nextId = (prefix = 'm'): string => `${prefix}${Date.now().toString(
 export function seedIds<T extends { replies?: MessageEntry[] }>(entries: T[]): T[] {
   return entries.map((e) => {
     const withId = { ...e, id: (e as any).id ?? nextId() } as T & { id: string };
-    if ((e as MessageEntry).replies) {
-      (withId as unknown as MessageEntry).replies = seedIds((e as MessageEntry).replies!);
+    if ((e as unknown as MessageEntry).replies) {
+      (withId as unknown as MessageEntry).replies = seedIds((e as unknown as MessageEntry).replies!);
     }
     return withId;
   });
