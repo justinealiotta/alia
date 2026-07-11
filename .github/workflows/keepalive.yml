@@ -2,7 +2,7 @@ name: Supabase Keepalive
 
 on:
   schedule:
-    - cron: '0 13 * * *'
+    - cron: '0 */6 * * *'   # every 6 hours
   workflow_dispatch:
 
 jobs:
@@ -11,9 +11,15 @@ jobs:
     steps:
       - name: Ping Supabase
         run: |
-          curl -X POST "${{ secrets.SUPABASE_URL }}/rest/v1/keepalive" \
-            -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
-            -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
-            -H "Content-Type: application/json" \
-            -H "Prefer: resolution=merge-duplicates" \
-            -d '{"id": 1, "pinged_at": "'"$(date -u +%Y-%m-%dT%H:%M:%SZ)"'"}'
+          for i in 1 2 3; do
+            curl -fsS -X POST "${{ secrets.SUPABASE_URL }}/rest/v1/keepalive" \
+              -H "apikey: ${{ secrets.SUPABASE_ANON_KEY }}" \
+              -H "Authorization: Bearer ${{ secrets.SUPABASE_ANON_KEY }}" \
+              -H "Content-Type: application/json" \
+              -d "{\"pinged_at\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" \
+              && echo "Ping succeeded on attempt $i" && exit 0
+            echo "Attempt $i failed, retrying in 30s..."
+            sleep 30
+          done
+          echo "All ping attempts failed"
+          exit 1
