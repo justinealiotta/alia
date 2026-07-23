@@ -1,0 +1,106 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   flow.css — Alia · the shared flow base (apply · casting · referral · profile)
+
+   The casting call: pure black ground, white type, all lowercase, square
+   everything. Held by space and type scale alone — no rules, cards, or chrome.
+   The Comp Builder is embedded directly below the call, flowing in the SAME
+   narrow column (200px → 400px), so the whole thing reads as one page you scroll
+   straight through. Tokens from shared/shell.css; type is Geist.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+:root { --flow-ease: cubic-bezier(0.22, 0.61, 0.36, 1); }
+
+.flow-root {
+  position: relative;
+  min-height: 100vh;
+  background: #000; color: var(--fg, #fff);
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  /* one shared column for BOTH the call and the builder below it —
+     200px floor (mobile) → 400px ceiling (desktop), like the room v2 experiment */
+  --col-w: clamp(200px, calc(120px + 20vw), 400px);
+  /* one shared left gutter, so call and card sit in the exact same column */
+  --flow-gutter: clamp(22px, 6vw, 56px);
+}
+
+/* ── The casting call ──────────────────────────────────────────────────── */
+.flow-intro {
+  display: flex; flex-direction: column;
+  padding: clamp(56px, 12vh, 128px) var(--flow-gutter) clamp(30px, 5vh, 52px);
+}
+
+/* The casting call keeps its full-bleed scale — only the builder below sits in
+   the narrow 200 → 400 column. */
+.flow-call {
+  display: flex; flex-direction: column; gap: clamp(22px, calc(13.2px + 2.29vw), 44px);
+}
+.flow-stanza {
+  display: flex; flex-direction: column;
+}
+.flow-line {
+  /* Alia scale: MOBILE 34 → DESKTOP 68 */
+  font-size: clamp(34px, calc(20.4px + 3.542vw), 68px);
+  font-weight: 500; letter-spacing: -0.03em; line-height: 1.02;
+  color: var(--fg, #fff);
+  text-transform: lowercase; text-wrap: balance;
+}
+/* requirements line — reads as running copy, not a headline */
+.flow-down {
+  text-wrap: pretty;
+}
+
+/* ── Referrer note ─────────────────────────────────────────────────────────
+   The message the referrer attached to the invite, rendered with the real
+   message system (messages.css). Only standalone layout is set here. */
+.ref-msg {
+  margin-bottom: clamp(20px, 3.2vh, 40px);
+  animation: refNoteIn 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+.ref-msg .msg { padding: 0; }
+.ref-msg .avatar img { object-position: 50% 22%; }
+
+@keyframes refNoteIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ref-msg { animation: none; }
+}
+
+/* ── The builder, embedded in the page ─────────────────────────────────────
+   The comp builder normally mounts as a fixed, full-screen scroll surface. Here
+   it flows inline under the call: static position, no own scroller, sharing the
+   page column and gutter. The floating fob stays fixed (bottom-right) as-is. */
+.flow-embed .cc-root {
+  position: static; inset: auto;
+  overflow: visible; min-height: 0;
+}
+.flow-embed .cc-stage {
+  min-height: 0;
+  padding: 0 var(--flow-gutter) clamp(56px, 12vh, 120px);
+  align-items: flex-start;
+}
+.flow-embed .cc-card {
+  width: var(--col-w);
+}
+.flow-embed .cc-tool {
+  font-size: clamp(18px, calc(15px + 0.9vw), 22px);
+}
+
+/* Type scaled to live in the narrow column (down from the full-bleed scale) */
+.flow-embed .cc-id-name {
+  font-size: clamp(40px, calc(28px + 3vw), 60px);
+  margin-bottom: clamp(6px, 1.2vw, 12px);
+}
+.flow-embed .cc-id-line,
+.flow-embed .cc-text,
+.flow-embed .cc-id-link {
+  font-size: clamp(20px, calc(16px + 1vw), 26px);
+}
+.flow-embed .cc-voice {
+  width: 100%; max-width: var(--col-w);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-intro { transition: none; }
+}

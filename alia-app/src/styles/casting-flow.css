@@ -1,0 +1,46 @@
+/* casting-flow.css — CastingFlowSeed, scoped to #casting-flow. html/body + @keyframes stay global. */
+html, body { background: #000; overscroll-behavior: none; scrollbar-width: none;  }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+#casting-flow .flow-intro  {
+  justify-content: flex-start; overflow-y: auto; overflow-x: hidden; touch-action: pan-y; -webkit-overflow-scrolling: touch; padding-bottom: clamp(40px, 8vh, 80px); scrollbar-width: none; }
+#casting-flow .flow-intro::-webkit-scrollbar { display: none; }
+#casting-flow .flow-stack  {
+  margin: auto 0; display: flex; flex-direction: column; gap: clamp(14px, 2.4vh, 30px); }
+#casting-flow .cast-seed  {
+  display: flex; flex-direction: column; align-items: flex-start; gap: clamp(3px, 0.6vw, 6px); margin-top: clamp(26px, 5vh, 56px); animation: seedIn 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) both; animation-delay: 0.28s; }
+#casting-flow .cast-seed-avatar  {
+  width: clamp(160px, 26vw, 320px); height: clamp(160px, 26vw, 320px); border-radius: 50%; overflow: hidden; background: #0a0a0a; margin-bottom: clamp(20px, 3vw, 36px); flex-shrink: 0; }
+#casting-flow .cast-seed-avatar img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 16%; display: block;  }
+#casting-flow .cast-seed-avatar.av-crop  {
+  position: relative; display: block; touch-action: none; cursor: grab; }
+#casting-flow .cast-seed-avatar.av-crop:active { cursor: grabbing;  }
+#casting-flow .cast-seed-avatar.av-crop img  {
+  position: absolute; left: 50%; top: 50%; max-width: none; pointer-events: none; -webkit-user-drag: none; user-select: none; }
+#casting-flow .cast-seed-avatar.av-crop.is-empty { background: var(--fg-25, rgba(255,255,255,0.25)); cursor: pointer;  }
+#casting-flow .cast-seed-avatar.av-crop.is-empty img { display: none;  }
+#casting-flow .cast-seed .editable  {
+  outline: none; caret-color: var(--fg); cursor: text; width: max-content; max-width: 100%; white-space: pre-wrap; overflow-wrap: normal; word-break: keep-all; text-wrap: pretty; }
+#casting-flow .cast-seed .editable.empty::before  {
+  content: attr(data-ph); color: var(--fg-25, rgba(255,255,255,0.25)); pointer-events: none; }
+#casting-flow .cast-seed .editable.frozen { cursor: default; caret-color: transparent;  }
+#casting-flow .cast-seed-avatar.av-crop.is-locked { cursor: default;  }
+#casting-flow .cast-seed-name  {
+  font-size: clamp(32px, calc(20.8px + 2.92vw), 60px); font-weight: 500; letter-spacing: -0.03em; line-height: 1.0; text-transform: lowercase; color: var(--fg); margin-bottom: clamp(8px, 1.2vw, 14px); }
+#casting-flow .cast-seed-line  {
+  font-size: clamp(18px, calc(14.8px + 0.83vw), 26px); font-weight: 300; line-height: 1.18; letter-spacing: -0.02em; color: var(--fg-70); font-variant-numeric: tabular-nums; }
+#casting-flow .cast-seed-link  {
+  font-size: clamp(18px, calc(14.8px + 0.83vw), 26px); font-weight: 300; line-height: 1.18; letter-spacing: -0.02em; color: var(--fg-70); text-decoration: none; transition: opacity 0.18s ease; }
+#casting-flow .cast-seed-link:hover { opacity: 0.7; text-decoration: underline;  }
+#casting-flow .cast-save, #casting-flow .cast-enter  {
+  position: fixed; right: var(--flow-gutter, clamp(22px, 6vw, 56px)); bottom: clamp(24px, 5vh, 44px); z-index: 3; border: none; background: none; cursor: pointer; font-family: inherit; color: var(--fg, #fff); text-decoration: none; animation: ccBlink 1.1s steps(2, start) infinite; }
+#casting-flow .cast-save  {
+  font-weight: 300; letter-spacing: -0.02em; font-size: clamp(20px, 2.4vw, 26px); padding: 2px 2px; }
+#casting-flow .cast-enter  {
+  font-weight: 400; letter-spacing: -0.03em; line-height: 1.0; font-size: clamp(40px, calc(26px + 4vw), 76px); }
+@keyframes ccBlink { 50% { opacity: 0.2;  } 
+}
+@keyframes seedIn { from { opacity: 0; transform: translateY(12px);  } to { opacity: 1; transform: none;  }
+}
+@media (prefers-reduced-motion: reduce)  {
+  #casting-flow .cast-seed { animation: none;  }
+ }

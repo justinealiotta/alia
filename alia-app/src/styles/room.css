@@ -1,0 +1,325 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   room.css — Room-SPECIFIC screen styling only.
+   The shared shell (tokens, resets, .app-root, .screen, .feed, shake, enter
+   animations) lives in shared/shell.css. This file carries what's unique to
+   the Room: reply/edit dimming, the referral drawer, the flat-reply +
+   masonry layout, smart typography, and light-mode details.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ── Reply / edit dimming ────────────────────────────────────────────────── */
+.msg, .typing-row { transition: opacity 200ms ease; }
+
+/* The composer now sits in normal flow at the tail of the feed, so no extra
+   bottom clearance is needed — let it rest just above the feed's own bottom
+   padding and grow downward from there. */
+.app-root#room .feed { padding-bottom: 28px; }
+@media (min-width: 768px) { .app-root#room .feed { padding: 26px 0 32px; } }
+@media (min-width: 1200px) { .app-root#room .feed { padding: 36px 0 40px; } }
+
+/* ── Message-level spacing ───────────────────────────────────────────────────
+   Every top-level post uses ONE consistent rhythm: a flat 30px
+   message break (sits below the block's own 30px tap-zone air). */
+.msg[data-gap] { margin-top: 30px; }
+
+/* ── Phrase card — 24h ephemeral text ────────────────────────────────────── */
+.phrase-card {
+  padding: 20px 12px 20px 62px;
+  font-family: 'Geist', system-ui, -apple-system, sans-serif;
+  font-size: 48px; font-weight: 400;
+  color: #ffffff; line-height: 1.3;
+  letter-spacing: -0.01em; text-align: left; text-wrap: pretty;
+}
+
+/* ── Edge-swipe zone (right edge) — swipe left opens the Profile ────── */
+.room-profile-edge-swipe {
+  /* Stop above the composer's bottom action cluster (send/save + throw-in fob)
+     so this swipe strip never sits over — and swallow taps on — those controls. */
+  position: fixed; top: 0; right: 0; bottom: clamp(110px, 16vh, 170px);
+  width: clamp(30px, 9vw, 60px);
+  z-index: 50; pointer-events: auto; touch-action: none;
+  background: none; border: 0; padding: 0; margin: 0;
+}
+
+/* ── Profile drawer — an in-place sheet that slides in from the right,
+   mirroring the sticker drawer's threshold-swipe + settle (just on the X axis).
+   Swipe left (room right edge) opens; swipe right (the left grip) closes. ──── */
+.room-profile-drawer {
+  /* Full-bleed on mobile; on wider screens it settles to a phone-width panel
+     pinned right, so the room shows through instead of a slab of dead black.
+     transform:translateX(100%) still hides it fully — it tracks its own width. */
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(100vw, 390px);
+  z-index: 82; background: #000;
+  overflow: hidden; overscroll-behavior: contain;
+  scrollbar-width: none;
+  transform: translateX(100%);
+  transition: transform 340ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  pointer-events: none;
+}
+.room-profile-drawer::-webkit-scrollbar { display: none; }
+.room-profile-drawer.open { transform: translateX(0); pointer-events: auto; }
+@media (prefers-reduced-motion: reduce) { .room-profile-drawer { transition: none; } }
+/* left-edge grip — drag right here to push the drawer back out (mirrors the
+   open zone's width so both targets are equally easy to grab) */
+.room-profile-close-edge {
+  position: absolute; top: 0; left: 0; bottom: 0;
+  width: clamp(30px, 9vw, 60px);
+  z-index: 5; pointer-events: auto; touch-action: none;
+  background: none; border: 0; padding: 0; margin: 0;
+}
+
+/* ── Throw-in fob hugs the bottom-right corner of the room ───────────────── */
+/* Scoped to #room so the apply-flow card builder keeps its roomier inset. The
+   trigger carries 6px internal padding, so an 8px inset lands the glyph ~14px
+   off each edge — as tight as it goes without clipping. */
+#room .cc-fab { right: 8px; bottom: 8px; }
+
+/* ── Flat replies (no indent · full message styling) ──────────────────────────
+   Toggled by the `flat-replies` class on .feed (set in AliaMessages.tsx). Replies
+   shed their indent + scaled-down treatment and inherit the top-level message
+   sizes — full avatar, full type, full media, message rhythm — so a thread reads
+   as one continuous stream rather than an indented sidebar. */
+.feed.flat-replies .col-footer {
+  padding-left: 0;
+  /* break out of the parent's content column back to the message's left edge
+     (avatar-col width + msg-inner gap) so replies line up with top-level posts */
+  margin-left: calc(-1 * (clamp(58px, calc(37.2px + 5.417vw), 110px) + 8px));
+}
+.feed.flat-replies .reply { gap: 8px; padding-top: 0; }
+.feed.flat-replies .reply .avatar-col { width: clamp(58px, calc(37.2px + 5.417vw), 110px) !important; }
+.feed.flat-replies .reply .avatar {
+  width: clamp(52px, calc(34.4px + 4.583vw), 96px);
+  height: clamp(52px, calc(34.4px + 4.583vw), 96px);
+}
+.feed.flat-replies .reply .text {
+  font-size: clamp(14px, calc(10px + 1.04vw), 24px); line-height: 1.5;
+  max-width: clamp(232px, calc(100vw - 130px), 660px);
+}
+.feed.flat-replies .reply .link-ref { max-width: clamp(200px, calc(96px + 27.083vw), 460px); }
+.feed.flat-replies .reply .img-with-save,
+.feed.flat-replies .reply .img-wrap { max-width: clamp(280px, calc(100vw - 74px), 720px); }
+.feed.flat-replies .reply .img-wrap.link-img { max-width: clamp(200px, calc(96px + 27.08vw), 460px); }
+.feed.flat-replies .reply .name-row { margin-bottom: 4px; }
+/* Block replies: aligned to the left column edge (same as top-level messages). */
+#room .block-reply-stack .reply .name-row { justify-content: flex-start; flex-direction: row; }
+#room .block-reply-stack .reply .name-row .name { text-align: left; }
+#room .msg-main .msg-translate { justify-content: flex-start; }
+#room .block-reply-stack .msg-translate { justify-content: flex-start; }
+/* left-aligned translate: drop the button's left padding so its text sits flush
+   with the body's left edge (matches the "edited" label). */
+#room .msg-main .msg-translate .act-btn.translate,
+#room .block-reply-stack .msg-translate .act-btn.translate { padding-left: 0; }
+#room .block-reply-stack .reply .body { text-align: left; }
+#room .block-reply-stack .reply .body .img-wrap,
+#room .block-reply-stack .reply .body .img-with-save,
+#room .block-reply-stack .reply .body .gif-wrap,
+#room .block-reply-stack .reply .body .link-ref,
+#room .block-reply-stack .reply .body .voice { margin-left: 0; margin-right: auto; }
+/* Block replies are indented under their block (composer stays full-width). */
+#room .block-reply-stack .reply-zone-nested { padding-left: clamp(32px, 4vw, 56px); }
+
+/* ── Light-mode details (token overrides come from light-mode.css) ───────── */
+html.light svg[data-icon="send"] path:last-child { stroke: #fff !important; }
+html.light .avatar { background: transparent !important; }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Room layout — the single #room-scoped layer. One-column canvas sizing,
+   flat-reply + masonry layout, composer slots, media, cursor. Scoped #room
+   (with !important) so it wins over the shared component sheets without
+   bleeding into the referral/casting pages, which share .msg/.text/.voice.
+   Type sizing/measure lives in the "Smart typography" section at the end.
+   ═══════════════════════════════════════════════════════════════════════ */
+:root  {
+  /* One-column canvas: 361px @393vw → 800px @1440vw; min() keeps 16px gutters below 393vw. */
+  --col-w: clamp(200px, min(calc(100vw - 32px), calc(196.2px + 41.93vw)), 800px); --av: clamp(92px, calc(60px + 8vw), 160px); --av-col: clamp(100px, calc(68px + 8vw), 168px); }
+#room .text, #room .reply .text, #room .feed.flat-replies .reply .text  {
+      font-weight: 400 !important; letter-spacing: -0.01em !important; }
+#room .link-ref, #room .reply .link-ref, #room .feed.flat-replies .reply .link-ref  {
+      max-width: var(--col-w) !important; font-size: clamp(22px, calc(15.6px + 1.6vw), 38px) !important; }
+#room .name, #room .reply .name, #room .feed.flat-replies .reply .name  {
+      font-size: clamp(18px, calc(13.2px + 1.2vw), 30px) !important; }
+#room .edited, #room .reply .edited, #room .feed.flat-replies .reply .edited  {
+      font-size: clamp(15px, calc(11px + 1vw), 24px) !important; color: var(--fg-40) !important; margin-top: 0.35em !important; }
+#room .reported-check  {
+      display: inline-flex; align-items: center; margin-left: 0.4em; vertical-align: baseline; color: var(--fg-40) !important; }
+#room .reported-noted { color: var(--fg-40) !important; margin-right: 0.4em; font-weight: inherit; letter-spacing: -0.02em; font-size: clamp(18px, calc(13px + 1.1vw), 28px); }
+#room .reported-check svg  {
+      width: clamp(18px, calc(13px + 1.1vw), 28px) !important; height: auto !important; transform: translateY(0.08em); }
+#room .reported-check svg path { stroke-width: 1.1 !important;  }
+#room .img-with-save, #room .imgs-stack, #room .imgs-gallery, #room .img-wrap.link-img, #room .gif-wrap, #room .reply .img-with-save, #room .reply .img-wrap, #room .reply .img-wrap.link-img, #room .feed.flat-replies .reply .img-with-save, #room .feed.flat-replies .reply .img-wrap, #room .feed.flat-replies .reply .img-wrap.link-img { max-width: var(--col-w) !important;  }
+#room .msg-main, #room .feed.flat-replies .reply .msg-main, #room .reply .col, #room .rb-compose .body { width: var(--col-w) !important;  }
+#room .atom-link  {
+      flex-direction: column !important; align-items: flex-start !important; gap: 0 !important; padding-left: 0 !important; max-width: var(--col-w) !important; }
+#room .atom-link.has-img .img-wrap.link-img  {
+      width: var(--col-w) !important; max-width: var(--col-w) !important; aspect-ratio: auto !important; background: #fff !important; border-radius: 0 !important; }
+#room .atom-link.has-img .img-wrap.link-img img  {
+      width: 100% !important; height: auto !important; object-fit: contain !important; }
+#room .atom-link .lr-label  {
+      font-size: clamp(22px, calc(15.6px + 1.6vw), 38px) !important; font-weight: 400 !important; line-height: 1.32 !important; letter-spacing: -0.01em !important; color: var(--fg-55) !important; }
+#room .voice, #room .voice .transcript { max-width: var(--col-w) !important;  }
+#room .voice .wave { flex: 1 1 0 !important; min-width: 0 !important; overflow: hidden !important; height: clamp(32px, calc(25.6px + 1.6vw), 48px) !important;  }
+/* font-size / line-height set in the Smart typography section. */
+#room .voice .transcript  {
+      font-weight: 400 !important; }
+#room .voice .play-btn  {
+      width: clamp(34px, calc(25.2px + 2.2vw), 56px) !important; height: clamp(34px, calc(25.2px + 2.2vw), 56px) !important; }
+#room .voice .play-btn svg { width: 100% !important; height: 100% !important;  }
+#room .rb-reply-slot, #room .rb-reply-slot-nested, #room .reply-zone > .rb-reply-slot, #room .reply:hover > .rb-reply-slot-nested, #room .reply-zone:has(.reply:hover) > .rb-reply-slot { display: block !important;  }
+#room .rb-compose.rb-inline { animation: none !important;  }
+#room .rb-tapzone  {
+      display: block; width: 100%; min-height: 44px; margin: 0; padding: 0; background: transparent; border: 0; outline: 0; cursor: text; -webkit-tap-highlight-color: transparent; }
+#room .rb-tapzone-bottom { min-height: clamp(72px, 12vh, 128px);  }
+/* Off-screen keyboard proxy — focusable (never display:none), invisible, and
+   inert to pointer so it never intercepts a tap. 16px font avoids iOS focus-zoom. */
+#room .rb-kbd-proxy {
+      position: fixed; bottom: 0; left: 0; width: 1px; height: 1px;
+      opacity: 0; padding: 0; margin: 0; border: 0; background: transparent;
+      font-size: 16px; color: transparent; caret-color: transparent;
+      pointer-events: none; z-index: -1; }
+#room .rb-slot-live { display: block;  }
+#room .rb-slot-live.rb-nudge { animation: rbNudge 0.46s ease;  }
+@keyframes rbNudge { 0%, 100% { transform: translateX(0);  } 15% { transform: translateX(-3px);  } 45% { transform: translateX(3px);  } 75% { transform: translateX(-2px);  }
+}
+@media (prefers-reduced-motion: reduce)  {
+  #room .rb-slot-live.rb-nudge { animation: none;  }
+   }
+#room .voice .dur { font-size: clamp(12px, calc(9.6px + 0.6vw), 18px) !important;  }
+#room .avatar-col, #room .feed.flat-replies .reply .avatar-col { width: var(--av-col) !important;  }
+#room .avatar, #room .feed.flat-replies .reply .avatar, #room .reply .avatar  {
+      width: var(--av) !important; height: var(--av) !important; }
+#room .col-footer { padding-left: calc(var(--av-col) + 8px) !important;  }
+#room .avatar { margin-top: clamp(6px, 0.6vw, 12px) !important;  }
+#room .rb-compose { padding-left: calc(var(--av-col) + 8px) !important;  }
+#room .rb-reply-slot-msg .rb-compose { padding-left: 0 !important;  }
+/* edit-in-place: the editor sits exactly where the body was, inside the
+   message column — no avatar-column indent, no top separation. */
+#room .rb-edit-slot .rb-compose { padding-left: 0 !important; margin-top: 0 !important;  }
+/* Block-reply composer: aligned to the block reply's OWN avatar column (the
+   body's left edge — column 1 of the reply sub-grid), and flush under the
+   block — no text-column indent, no gap. */
+#room .block-reply-stack > .rb-slot-live,
+#room .block-reply-stack > .rb-tapzone {
+      margin-left: 0 !important; }
+/* Tap-zone stays flush (its own min-height carries the gap); the live composer
+   gets 30px of air above it so it doesn't open crowding the block. */
+#room .block-reply-stack > .rb-tapzone { margin-top: 0 !important; padding-left: 0 !important; min-height: 30px !important; }
+#room .block-reply-stack > .rb-slot-live { margin-top: 30px !important; }
+#room .block-reply-stack > .rb-slot-live .rb-compose { padding-left: 0 !important; margin-top: 0 !important; }
+/* Block replies stack at 15px apart; the LAST one carries 30px so the next
+   block keeps its air. */
+#room .masonry-block .block-reply-stack .reply-zone-nested { margin-bottom: 15px; }
+#room .masonry-block .block-reply-stack .reply-zone-nested:last-child { margin-bottom: 30px; }
+#room .composer-dock .rb-compose { padding-left: calc(12px + var(--av-col) + 8px) !important;  }
+/* The new-message (trailing) composer aligns left to the message avatar column. */
+#room .rb-trailing-slot .rb-compose { padding-left: 24px !important;  }
+#room .feed.flat-replies .col-footer  {
+      padding-left: 0 !important; margin-left: calc(-1 * (var(--av-col) + 8px)) !important; }
+#room .msg { padding-left: 30px !important;  }
+#room .feed.flat-replies .reply { padding-left: 0 !important;  }
+/* Aspect-ratio masonry grid (CSS columns), nothing cropped. */
+#room .masonry-grid { width: var(--col-w) !important; column-count: 2; column-gap: 30px; }
+#room .masonry-block { break-inside: avoid; margin: 0; position: relative; }
+/* Composing a block reply under a media cell — OR a media cell that already
+   carries block replies — drops that cell to a full-width row (column-span
+   breaks the multicol flow) so the reply thread fills the whole message column.
+   The media itself stays at single-column size (see cap below). */
+#room .masonry-grid > .masonry-block:has(> .block-reply-stack > .rb-slot-live),
+#room .masonry-grid > .masonry-block:has(> .block-reply-stack > .reply-zone-nested) { column-span: all; }
+/* Cap every masonry media at single-column width (no-op normally; keeps the
+   broken-out block's media at its normal single-media size instead of stretching
+   to the full row). Plain descendant selector — no :has() + combinator, which
+   some engines drop. */
+#room .masonry-grid > .masonry-block > :not(.block-reply-stack) {
+  max-width: calc((var(--col-w) - 30px) / 2) !important; }
+/* everything inside a cell fits the CELL width, not the message column (col-w) */
+#room .masonry-block .block-reply-stack,
+#room .masonry-block .reply-zone-nested,
+#room .masonry-block .reply,
+#room .masonry-block .msg-inner,
+#room .masonry-block .msg-main,
+#room .masonry-block .reply .col,
+#room .masonry-block .rb-slot-live,
+#room .masonry-block .rb-compose,
+#room .masonry-block .rb-compose .body,
+#room .masonry-block .rb-live,
+#room .masonry-block .img-with-save,
+#room .masonry-block .imgs-stack,
+#room .masonry-block .text { width: 100% !important; max-width: 100% !important; min-width: 0 !important; }
+#room .masonry-block img { width: 100%; height: auto; display: block; }
+/* A block reply's own body renders its media as a nested masonry-grid forced to
+   --col-w; inside a block it must fit the BLOCK width, not the message col — but
+   stays the same 2-column aspect-ratio masonry as everywhere else. */
+#room .masonry-block .reply-zone-nested .masonry-grid,
+#room .masonry-block .reply-zone-nested .imgs-stack,
+#room .masonry-block .reply-zone-nested .img-wrap { width: 100% !important; max-width: 100% !important; }
+/* Composer draft gallery — same aspect-ratio 2-column masonry as the feed. */
+#room .rb-masonry { width: 100% !important; column-count: 2; column-gap: 30px; }
+#room .rb-masonry-block { break-inside: avoid; margin: 0 0 30px; position: relative; overflow: hidden; cursor: grab; }
+#room .rb-masonry-block img, #room .rb-masonry-block video { width: 100%; height: auto; display: block; -webkit-user-drag: none; }
+#room .rb-masonry-block .av-play { position: absolute; inset: 0; margin: auto; width: clamp(30px, 22%, 64px); height: clamp(30px, 22%, 64px); color: #fff; mix-blend-mode: difference; pointer-events: none; }
+#room .rb-masonry-block .av-play svg { width: 100%; height: 100%; display: block; }
+#room .masonry-block video { width: 100%; height: auto; display: block; }
+#room .masonry-block .av-play { position: absolute; inset: 0; margin: auto; width: clamp(30px, 22%, 64px); height: clamp(30px, 22%, 64px); color: #fff; mix-blend-mode: difference; pointer-events: none; }
+#room .masonry-block .av-play svg { width: 100%; height: 100%; display: block; }
+/* Hide the parent avatar only when the MESSAGE'S OWN name-row is hidden (its own
+   post). Scoped to the direct name-row so a nested OWN block/inline reply's hidden
+   name-row doesn't also blank the parent's avatar. */
+#room .msg-inner:has(> .msg-main > .col > .name-row[style*="none"]) > .avatar-col { visibility: hidden !important;  }
+#room .img-wrap[data-snapped] img, #room .gif-wrap[data-snapped] img  {
+      width: 100% !important; height: 100% !important; object-fit: cover !important; display: block; }
+#room .img-wrap.link-img[data-snapped] img { object-fit: contain !important;  }
+#room .img-wrap img, #room .gif-wrap img, #room .avatar img, #room .msg-avatar img { touch-action: pan-y;  }
+/* Native save belongs to the OS: long-press (iOS/Android) and right-click
+   (desktop) open the platform's own "Save Image" affordance on any feed image.
+   The app no longer intercepts either \u2014 pinch is still the app's lift-out zoom. */
+#room .img-wrap img, #room .gif-wrap img, #room .avatar img, #room .msg-avatar img {
+      -webkit-touch-callout: default; -webkit-user-drag: auto; }
+/* Reading feed: one normal arrow everywhere. No I-beam over text, no pointer
+   over links/video, no grab over zoomable media — the cursor stayed still
+   instead of flickering through shapes as you move across a message. Text is
+   still selectable; the arrow just doesn't change. */
+#room .feed, #room .feed *,
+#room .text, #room .link-ref,
+#room .img-wrap, #room .gif-wrap, #room .av-screen, #room .av-footage,
+#room .avatar, #room .avatar img, #room .msg-avatar, #room .msg-avatar img {
+  cursor: default;
+}
+#room .col { position: relative !important;  }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Smart typography — text self-formats to always read on-brand and comfortable.
+   Two native-CSS mechanisms, no new visual chrome (Alia stays subtractive):
+
+   1. MEASURE-FIRST, CONTAINER-DRIVEN SIZE. Type sizes to the COLUMN it lives in
+      (container query units, cqi, off .col / masonry cell), not the window. Text
+      in a narrow masonry cell eases down; the same block in the full column
+      grows. Line length is then pinned in `ch` (font-relative), holding a
+      book-comfortable ~55–62-character measure at every width — so the 800px
+      desktop column no longer stretches copy to a ~73-char ribbon.
+   2. BREAK HYGIENE. text-wrap: balance on display lines (even rag, no stranded
+      word), pretty on running copy (no lonely last line), overflow-wrap so a
+      long word / URL wraps instead of clipping or spilling the column.
+
+   Appended last so it wins on source order over the room-experiment overrides
+   above at equal specificity.
+   ═══════════════════════════════════════════════════════════════════════ */
+#room .col, #room .reply .col, #room .masonry-block { container-type: inline-size; }
+
+#room .text, #room .feed.flat-replies .reply .text {
+  font-size: clamp(18px, calc(13px + 1.37cqi), 24px) !important;
+  line-height: 1.35 !important; max-width: 62ch !important;
+  text-wrap: pretty !important; overflow-wrap: break-word !important;
+  hanging-punctuation: first last; }
+#room .reply .text {
+  font-size: clamp(17px, calc(13px + 1.1cqi), 22px) !important;
+  line-height: 1.32 !important; max-width: 58ch !important;
+  text-wrap: pretty !important; overflow-wrap: break-word !important; }
+#room .masonry-block .text {
+  font-size: clamp(15px, calc(11px + 1.8cqi), 22px) !important; line-height: 1.35 !important; }
+#room .voice .transcript {
+  font-size: clamp(17px, calc(13px + 1.2cqi), 23px) !important;
+  line-height: 1.4 !important; max-width: 58ch !important;
+  text-wrap: pretty !important; overflow-wrap: break-word !important; }
+#room .link-ref, #room .atom-link .lr-label {
+  overflow-wrap: anywhere !important; -webkit-hyphens: auto; hyphens: auto;
+  text-wrap: pretty !important; }
+

@@ -1,0 +1,109 @@
+/* legal.css — Terms of Service & Privacy Policy, scoped to .legal
+   (#terms / #privacy). App-native treatment: pure black ground, all-lowercase,
+   big white headers, big faded section numbers, body at reduced opacity, dash
+   markers (no bullets/rules/cards). Left-aligned; type scales up with the
+   viewport. Reads as the same app — space + type hierarchy only. */
+
+html, body { scrollbar-width: none; }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+.legal { overflow-y: auto; scrollbar-width: none; }
+.legal::-webkit-scrollbar { display: none; }
+.legal .legal-doc {
+  padding: clamp(52px, 11vh, 132px) var(--flow-gutter, clamp(22px, 6vw, 56px)) clamp(72px, 13vh, 148px);
+  width: 100%;
+  text-align: left;
+  text-transform: lowercase;
+}
+
+/* ── Document title + timestamp ──────────────────────────────────────────── */
+.legal .doc-title {
+  font-size: clamp(44px, calc(24px + 6.4vw), 96px);
+  font-weight: 500; letter-spacing: -0.038em; line-height: 0.96;
+  color: var(--fg); margin: 0 0 clamp(12px, 1.6vw, 20px);
+}
+.legal .updated {
+  font-size: clamp(14px, calc(12px + 0.6vw), 20px);
+  font-weight: 300; letter-spacing: -0.01em;
+  color: var(--fg-40); margin: 0 0 clamp(44px, 8vh, 92px);
+}
+
+/* ── Intro ───────────────────────────────────────────────────────────────── */
+.legal .intro { margin-bottom: clamp(44px, 8vh, 92px); max-width: 34em; }
+.legal .intro p {
+  font-size: clamp(17px, calc(13.5px + 1.0vw), 26px);
+  font-weight: 300; line-height: 1.5; letter-spacing: -0.02em;
+  color: var(--fg-70); text-wrap: pretty; margin: 0;
+}
+.legal .intro p + p { margin-top: clamp(12px, 1.6vw, 20px); }
+
+/* ── Sections ────────────────────────────────────────────────────────────── */
+.legal .doc-section { margin-bottom: clamp(44px, 7.5vh, 88px); }
+
+/* the big faded number + white header, stacked */
+.legal .doc-section h2 {
+  display: flex; flex-direction: column; gap: clamp(4px, 0.8vw, 10px);
+  margin: 0 0 clamp(16px, 2.4vh, 26px);
+  font-size: clamp(24px, calc(16px + 2.4vw), 44px);
+  font-weight: 500; letter-spacing: -0.03em; line-height: 1.0; color: var(--fg);
+}
+.legal .doc-section h2 .num {
+  font-size: clamp(30px, calc(18px + 3.4vw), 68px);
+  font-weight: 300; letter-spacing: -0.03em; line-height: 0.9;
+  color: var(--fg-25); font-variant-numeric: tabular-nums;
+}
+.legal .doc-section h3 {
+  font-size: clamp(16px, calc(13px + 0.8vw), 22px);
+  font-weight: 500; letter-spacing: -0.02em; color: var(--fg-90);
+  margin: clamp(22px, 3vh, 34px) 0 clamp(8px, 1.1vw, 14px);
+}
+
+/* ── Body copy ───────────────────────────────────────────────────────────── */
+.legal p.doc-p {
+  font-size: clamp(15px, calc(12.6px + 0.7vw), 21px);
+  font-weight: 300; line-height: 1.6; letter-spacing: -0.016em;
+  color: var(--fg-70); text-wrap: pretty; max-width: 40em; margin: 0;
+}
+.legal p.doc-p + p.doc-p { margin-top: clamp(9px, 1.2vw, 15px); }
+.legal p.doc-lead { color: var(--fg-70); }
+
+/* ── Lists — dash markers, no dots/rules ─────────────────────────────────── */
+.legal .doc-ul {
+  list-style: none; margin: clamp(10px, 1.4vw, 16px) 0 0; padding: 0;
+  display: flex; flex-direction: column; gap: clamp(7px, 1vw, 12px);
+  max-width: 40em;
+}
+.legal .doc-ul li {
+  position: relative; padding-left: clamp(22px, 2vw, 32px);
+  font-size: clamp(15px, calc(12.6px + 0.7vw), 21px);
+  font-weight: 300; line-height: 1.5; letter-spacing: -0.016em;
+  color: var(--fg-55); text-wrap: pretty;
+}
+.legal .doc-ul li::before {
+  content: "\2014"; position: absolute; left: 0; top: 0;
+  color: var(--fg-25);
+}
+
+/* ── Links ───────────────────────────────────────────────────────────────── */
+.legal a {
+  color: var(--fg); text-decoration: underline;
+  text-underline-offset: 3px; text-decoration-thickness: 1px;
+  transition: opacity 160ms ease;
+}
+.legal a:hover { opacity: 0.6; }
+
+/* ── Closing acknowledgement ─────────────────────────────────────────────── */
+.legal .acknowledge { margin-top: clamp(52px, 9vh, 104px); max-width: 34em; }
+.legal .acknowledge p {
+  font-size: clamp(15px, calc(12.6px + 0.7vw), 21px);
+  font-weight: 300; line-height: 1.5; letter-spacing: -0.016em;
+  color: var(--fg-40); text-wrap: pretty; margin: 0;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Smart typography — measure caps + break hygiene. Fluid one-line fit for
+   names / giant nowrap lines lives in vendor/smart-type.js. Appended last so
+   these win on source order at equal specificity. No new visual chrome.
+   ═══════════════════════════════════════════════════════════════════════ */
+.legal .doc-title { text-wrap: balance; }
+.legal .doc-section h2 { text-wrap: balance; }
