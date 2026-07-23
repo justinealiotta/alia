@@ -1,5 +1,0 @@
-/* Tailwind layers. Preflight is disabled (tailwind.config.ts) so this does not
-   touch the hand-authored Alia CSS. Utilities stay available for new work. */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
