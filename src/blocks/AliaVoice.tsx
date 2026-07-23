@@ -263,7 +263,10 @@ function VoicePlayer({ duration, transcript, src, progress = 0, onPlay }: Player
   );
 }
 
-export interface AliaVoiceProps extends PlayerProps {
+export interface AliaVoiceProps extends Omit<PlayerProps, 'duration'> {
+  /** Playback length. Required for the pure player; unused in `recordable`
+   *  mode, where the length comes from the captured take. */
+  duration?: number;
   /** Enable the record → play → remove lifecycle (composing surfaces). */
   recordable?: boolean;
   /** A take already captured (controlled): shows the player, removable. */
@@ -288,7 +291,7 @@ export default function AliaVoice(props: AliaVoiceProps) {
   const {
     recordable, value, onCommit, onRemove, startRecording, onCancelRecording,
     triggerClassName = 'cc-tool', triggerLabel = 'voice', wrapClassName, recorderClassName,
-    ...player
+    duration = 0, ...player
   } = props;
 
   // Uncontrolled record lifecycle (only when `recordable` and not value-controlled).
@@ -296,7 +299,7 @@ export default function AliaVoice(props: AliaVoiceProps) {
   const [recording, setRecording] = useState(!!startRecording);
   useEffect(() => { if (value !== undefined) setTake(value); }, [value]);
 
-  if (!recordable) return <VoicePlayer {...player} />;
+  if (!recordable) return <VoicePlayer duration={duration} {...player} />;
 
   const committed = value !== undefined ? value : take;
 

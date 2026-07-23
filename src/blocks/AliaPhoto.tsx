@@ -29,6 +29,9 @@ const photoBlobToDataURL = (b: Blob): Promise<string> =>
    in-browser cut-out and fall back to the raw photo if the model can't load. */
 export async function cutoutFromFile(file: File): Promise<string> {
   try {
+    // Resolved by the browser at runtime (webpackIgnore keeps it a native URL
+    // import — see next.config.mjs); TypeScript can't type a remote URL module.
+    // @ts-expect-error — remote URL import has no local type declarations
     const mod: any = await import(/* webpackIgnore: true */ 'https://esm.sh/@imgly/background-removal@1.5.8');
     const remove = mod.removeBackground || (mod.default && mod.default.removeBackground);
     const cut = await remove(file);          // transparent-background PNG blob
