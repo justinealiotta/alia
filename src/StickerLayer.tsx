@@ -64,7 +64,7 @@ export default function StickerLayer() {
   const [textEmpty, setTextEmpty] = useState(true);
   const [inkStatus, setInkStatus] = useState<'edit' | 'gen' | 'ready'>('edit');
   const [inkSticker, setInkSticker] = useState<any>(null);
-  const [ghost, setGhost] = useState<{ src: string; w: number; x: number; y: number } | null>(null);
+  const [ghost, setGhost] = useState<{ payload: any; w: number; x: number; y: number } | null>(null);
   const [dragSlot, setDragSlot] = useState<string | null>(null);
   const [dragId, setDragId] = useState<string | null>(null);
   const [feedEl, setFeedEl] = useState<HTMLElement | null>(null);

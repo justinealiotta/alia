@@ -690,7 +690,7 @@ export default function AliaComposerBlocks({ onSend, onUnsend, replyMode, editIt
                   activeDragId={dragId}
                   cells={g.run.map((d) => ({
                     id: d.id,
-                    src: d.src,
+                    src: d.type === 'image' || d.type === 'video' ? d.src : undefined,
                     kind: d.type === 'video' ? 'video' : 'photo',
                     captionsSrc: d.type === 'video' ? AV_CAPTIONS_VTT : undefined,
                   }))}

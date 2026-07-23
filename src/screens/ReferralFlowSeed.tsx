@@ -71,7 +71,7 @@ export default function ReferralFlowSeed() {
                   <div className="msg-main"><div className="col">
                     <div className="name-row"><AliaName name={REFERRER.name} /></div>
                   <div className="body">
-                    <AliaMessageBlocks block={{ type: 'voice', duration: 11, transcript: REFERRER.message, progress: 0 }} cls="block" />
+                    <AliaMessageBlocks block={{ id: 'ref-voice', type: 'voice', duration: 11, transcript: REFERRER.message, progress: 0 }} cls="block" />
                   </div>
                   </div></div>
                 </div>

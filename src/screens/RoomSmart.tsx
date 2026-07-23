@@ -128,7 +128,7 @@ export default function RoomSmart() {
             ts: (m.ts || Date.now()) + 60000,
             user: { name: 'Adaeze Vance', initials: 'AV', img: MEMBER_IMGS.AV },
             isOwn: false,
-            blocks: [{ type: 'text', text: 'this is the one. bench-core but you can actually wear it' }],
+            blocks: [{ id: 'bs0.b1.0.t0', type: 'text', text: 'this is the one. bench-core but you can actually wear it' }],
             interactions: [],
           }],
         },
