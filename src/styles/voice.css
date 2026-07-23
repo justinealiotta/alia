@@ -1,0 +1,187 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   voice.css  ·  Alia — Voice Message Component
+   Single canonical source. The composer (and every other page) hosts this
+   component — it does not own it.
+
+   Used in: Room feed, Application feed, Casting Onboarding, P2P Onboarding,
+            P2P Referral, OTP, and the Composer (as .atom-voice).
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ── Shell ───────────────────────────────────────────────────────────────── */
+/* .voice = feed / standalone context                                        */
+.voice {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: transparent;
+  padding: 0;
+  max-width: 280px;
+}
+
+/* ── Play row ────────────────────────────────────────────────────────────── */
+.voice-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ── Play / pause — plain icon, no chrome ───────────────────────────────── */
+.play-btn {
+  width: 28px; height: 28px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 0; padding: 0;
+  color: var(--fg); cursor: pointer; flex-shrink: 0;
+}
+
+/* ── Waveform bars ───────────────────────────────────────────────────────── */
+.wave {
+  display: flex; align-items: center; gap: 4px;
+  flex: 0 0 auto; height: 26px;
+}
+.wave i {
+  display: block; flex: 0 0 auto;
+  width: 1.6px; min-width: 1.6px; max-width: 1.6px; height: 100%;
+  background: var(--fg); opacity: 0.30; border-radius: 1px;
+  transform-origin: center; transform: scaleY(var(--h, 0.5));
+  transition: opacity 180ms ease;
+}
+.wave i.on { opacity: 1; }
+.wave i.off { opacity: 0; transform: scaleY(0); }
+
+/* ── Duration ────────────────────────────────────────────────────────────── */
+.dur {
+  font-size: 10px; letter-spacing: 0.08em; color: var(--fg-55);
+  flex-shrink: 0; font-variant-numeric: tabular-nums; white-space: nowrap;
+}
+
+/* ── Playback speed — a plain tappable number (1x · 1.5x · 2x) ───────────── */
+.speed {
+  background: transparent; border: 0; padding: 2px 4px; cursor: pointer;
+  color: var(--fg-55); flex-shrink: 0; font-family: inherit; font-weight: 500;
+  font-variant-numeric: tabular-nums; white-space: nowrap; letter-spacing: -0.02em;
+  font-size: clamp(15px, calc(10px + 1.3vw), 28px);
+  transition: color 0.15s;
+}
+.speed:hover, .speed:active { color: var(--fg); }
+
+/* ── Transcript — always shows in full, never truncated ─────────────────── */
+.voice .transcript,
+.seg-voice .transcript,
+.atom-voice .av-tr {
+  margin: 0; padding: 0;
+  font-size: 14px; line-height: 1.5;
+  color: var(--fg); font-weight: 300;
+  letter-spacing: -0.005em;
+  white-space: pre-wrap; word-break: break-word;
+  text-wrap: pretty;
+  max-width: 36ch;
+}
+
+/* ambient voice: the transcript IS the control — greyed until spoken, tap to
+   play / pause, tap a word to seek. Caps at ~3 lines and scrolls with no visible
+   scrollbar, auto-following the spoken word while it plays. */
+.voice .transcript.am-tr { cursor: pointer; max-height: calc(1.45em * 3); overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; }
+.voice .transcript.am-tr::-webkit-scrollbar { width: 0; height: 0; display: none; }
+.voice .transcript.am-tr .w { color: rgba(255,255,255,0.32); transition: color 200ms ease; cursor: pointer; }
+.voice .transcript.am-tr .w.said { color: var(--fg); }
+
+/* ── Ambient recorder — live transcript, no waveform ─────────────────────────
+   Recording looks like the message writing itself: STT words stream in white
+   with a trailing caret; pause/record to breathe; done (blinking) settles it. */
+.av-rec { display: flex; flex-direction: column; max-width: 280px; }
+.av-rec-tr { margin: 0; font-weight: 300; color: var(--fg); text-wrap: pretty;
+  font-size: clamp(14px, calc(10px + 1.04vw), 24px); line-height: 1.5; letter-spacing: -0.005em; }
+.av-rec-tr .av-rec-ph { color: rgba(255,255,255,0.32); }
+.av-rec-caret { display: inline-block; width: 2px; height: 1.05em; background: var(--fg); margin-left: 2px; vertical-align: -2px; animation: ccBlink 1s steps(2, start) infinite; }
+.av-rec.paused .av-rec-caret { animation: none; opacity: 0.3; }
+.av-rec-row { display: flex; align-items: center; gap: 18px; margin-top: clamp(14px, 2vw, 20px); }
+.av-rec-space { flex: 1; }
+.av-rec-btn { border: 0; background: none; padding: 0; cursor: pointer; font-family: inherit; font-weight: 300; letter-spacing: -0.015em; color: var(--fg-40); transition: color 0.18s;
+  font-size: clamp(14px, calc(12px + 0.4vw), 18px); }
+.av-rec-btn:hover { color: var(--fg); }
+.av-rec-done { color: var(--fg); animation: ccBlink 1.1s steps(2, start) infinite; }
+
+/* ── Playback animation ─────────────────────────────────────────────────── */
+/* ── Playback = the recorded waveform holds its shape while a bright edge
+   sweeps through it; played bars stay lit. No height pulsing.
+   (@keyframes barPulse is retained below for the live recording wave.) */
+.wave i.lead { opacity: 0.62; }
+@keyframes barPulse {
+  0%, 100% { transform: scaleY(calc(var(--h, 0.5) * 0.45)); }
+  50%       { transform: scaleY(var(--h, 1)); }
+}
+
+/* ── Progressive reveal ──────────────────────────────────────────────────── */
+/* Idle: full static transcript (reading — words carry no inline opacity).
+   Playing: each word fades in via a per-frame inline opacity ramp set by the
+   component (a CSS transition would be restarted every rAF frame and never
+   settle, so the reveal is driven in JS, not here). Settles back to full text
+   when playback ends. Nothing to declare — kept as a marker. */
+
+/* ── Recording surface ───────────────────────────────────────────────────── */
+/* The recording row must center-align so the dot sits on the same midline
+   as the wave. Override the base .composer align-items: flex-end here.    */
+.composer.cm-rec { align-items: center; }
+
+.rec-dot {
+  display: block; flex-shrink: 0; align-self: center;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--fg);
+  animation: recDotPulse 900ms ease-in-out infinite;
+}
+@keyframes recDotPulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.3; transform: scale(0.65); }
+}
+
+
+/* Same component, hosted inside the composer stream.
+   Composer adds its own margin/padding-left.      */
+.atom-voice {
+  display: inline-flex; flex-direction: column; align-items: flex-start;
+  gap: 10px; max-width: 280px; background: transparent;
+}
+/* .voice-row, .play-btn, .wave, .dur, .transcript — all inherited from
+   the canonical rules above. No overrides needed. */
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Recorder UI (moved here from the retired composer-styles.css). AliaVoice's
+   recording toolbar: round icon buttons + the live recording waveform.
+   (Playback waveform / duration / transcript styles are above.)
+   ═══════════════════════════════════════════════════════════════════════ */
+.icon-btn {
+  width: 32px; height: 32px; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 0; cursor: pointer;
+  color: var(--fg-70); border-radius: 999px;
+  transition: color 160ms ease, opacity 160ms ease, transform 160ms ease;
+}
+.icon-btn:hover { color: var(--fg); }
+.icon-btn.rec-mid { color: var(--fg); }
+
+.rec-live {
+  flex: 1; min-width: 0;
+  display: flex; align-items: center; gap: 10px;
+}
+.rec-elapsed {
+  font-size: 13px; color: var(--fg);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em; flex-shrink: 0;
+  font-weight: 300;
+}
+.rec-live .wave {
+  flex: 0 0 auto; height: 26px;
+  display: flex; align-items: center; gap: 4px;
+}
+.rec-live .wave i {
+  display: block;
+  width: 1.6px; min-width: 1.6px; max-width: 1.6px;
+  height: 100%;
+  background: var(--fg); border-radius: 1px;
+  transform-origin: center;
+  transform: scaleY(var(--h, 0.5));
+  opacity: 1;
+  transition: opacity 120ms ease;
+}
+.rec-live .wave i.off { opacity: 0; transform: scaleY(0); }

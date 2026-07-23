@@ -1,0 +1,77 @@
+/* referral-tool.css — ReferralTool, scoped to #referral-tool. html/body + @keyframes stay global. */
+html, body { background: #000; overscroll-behavior: none; scrollbar-width: none;  }
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+#referral-tool .flow-intro  {
+  justify-content: center; overflow-y: auto; overflow-x: hidden; touch-action: pan-y; -webkit-overflow-scrolling: touch; padding-bottom: clamp(40px, 8vh, 80px); scrollbar-width: none; }
+#referral-tool .flow-intro::-webkit-scrollbar { display: none; }
+#referral-tool .flow-stack  {
+  margin: auto 0; display: flex; flex-direction: column; gap: clamp(14px, 2.4vh, 30px); animation: stepIn 0.5s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+@keyframes stepIn { from { opacity: 0; transform: translateY(10px);  } to { opacity: 1; transform: none;  } 
+}
+@keyframes ccBlink { 50% { opacity: 0.2;  } 
+}
+#referral-tool .ref-note-screen .ref-msg { margin-bottom: 0; animation: none;  }
+#referral-tool .ref-note-screen { margin: 0; min-height: 100%; position: relative; justify-content: center;  }
+#referral-tool .ref-note-screen .ref-msg .msg-inner { gap: clamp(20px, 3vw, 44px); align-items: flex-start;  }
+#referral-tool .ref-note-screen .ref-msg .avatar-col, #referral-tool .ref-note-screen .ref-msg .avatar { width: clamp(160px, 26vw, 320px);  }
+#referral-tool .ref-note-screen .ref-msg .avatar { height: clamp(160px, 26vw, 320px);  }
+#referral-tool .ref-note-screen .ref-msg .avatar-sticky { position: static; top: auto;  }
+#referral-tool .ref-note-screen .ref-msg .name  {
+  font-size: clamp(24px, calc(15.6px + 2.19vw), 45px); margin-bottom: clamp(8px, 1.2vw, 14px); max-width: none; overflow: visible; text-overflow: clip; white-space: normal; }
+#referral-tool .ref-note-screen .ref-msg .text  {
+  font-size: clamp(32px, calc(20.8px + 2.92vw), 60px); line-height: 1.1; letter-spacing: -0.02em; max-width: none; text-wrap: pretty; }
+#referral-tool .ref-note-screen .ref-msg .voice { max-width: none; gap: clamp(16px, 2.2vw, 32px);  }
+#referral-tool .ref-note-screen .ref-msg .voice-row { gap: clamp(18px, 2.4vw, 36px);  }
+#referral-tool .ref-note-screen .ref-msg .play-btn { width: clamp(56px, 8vw, 96px); height: clamp(56px, 8vw, 96px);  }
+#referral-tool .ref-note-screen .ref-msg .play-btn svg { width: clamp(34px, 5vw, 60px); height: clamp(34px, 5vw, 60px);  }
+#referral-tool .ref-note-screen .ref-msg .wave { height: clamp(48px, 7vw, 92px); gap: clamp(4px, 0.7vw, 9px);  }
+#referral-tool .ref-note-screen .ref-msg .wave i  {
+  width: clamp(3px, 0.45vw, 6px); min-width: clamp(3px, 0.45vw, 6px); max-width: clamp(3px, 0.45vw, 6px); border-radius: 2px; }
+#referral-tool .ref-note-screen .ref-msg .dur { font-size: clamp(15px, calc(11px + 1vw), 24px);  }
+#referral-tool .ref-note-screen .ref-msg .transcript  {
+  font-size: clamp(32px, calc(20.8px + 2.92vw), 60px); line-height: 1.1; letter-spacing: -0.02em; max-width: none; font-weight: 400; text-wrap: pretty; }
+#referral-tool .ref-name-screen { gap: clamp(20px, 3.5vh, 40px);  }
+#referral-tool .ref-bring  {
+  margin: 0; font-weight: 500; letter-spacing: -0.035em; line-height: 1.05; color: var(--fg, #fff); text-transform: lowercase; text-wrap: balance; font-size: clamp(40px, calc(26px + 3.4vw), 76px); }
+#referral-tool .ref-note-screen .ref-say { margin: 0 0 clamp(20px, 3.5vh, 44px); text-align: left;  }
+#referral-tool .ref-name-field  {
+  border: none; background: none; outline: none; padding: 0; margin: 0; font-family: inherit; color: var(--fg, #fff); caret-color: var(--fg, #fff); font-weight: 300; letter-spacing: -0.025em; line-height: 1.1; font-size: clamp(24px, calc(16px + 2.2vw), 44px); width: 100%; max-width: 100%; cursor: text; }
+#referral-tool .ref-name-field::placeholder { color: var(--fg-25, rgba(255,255,255,0.25));  }
+#referral-tool .ref-name-field.empty::before { content: attr(data-ph); color: var(--fg-25, rgba(255,255,255,0.25)); pointer-events: none; }
+#referral-tool .ref-link-screen { gap: clamp(14px, 2.6vh, 28px);  }
+#referral-tool .ref-send-it { margin: 0 0 clamp(10px, 1.8vh, 22px);  }
+#referral-tool .ref-link  {
+  color: var(--fg-55, rgba(255,255,255,0.55)); text-decoration: none; word-break: break-all; font-weight: 500; letter-spacing: -0.03em; line-height: 1.02; font-size: clamp(30px, calc(20px + 2.8vw), 56px); }
+#referral-tool .ref-link-actions { display: flex; gap: clamp(22px, 3.2vw, 44px); margin-top: clamp(8px, 1.6vh, 18px);  }
+#referral-tool .ref-link-btn  {
+  border: none; background: none; padding: 0; cursor: pointer; font-family: inherit; font-weight: 400; letter-spacing: -0.02em; font-size: clamp(20px, 2.4vw, 28px); color: var(--fg, #fff); animation: ccBlink 1.1s steps(2, start) infinite; }
+#referral-tool .ref-note-screen .amm-text  {
+  font-size: clamp(32px, calc(20.8px + 2.92vw), 60px); line-height: 1.1; letter-spacing: -0.02em; text-wrap: pretty; min-height: 1.1em; caret-color: var(--fg, #fff); outline: none; word-break: break-word; cursor: text; }
+#referral-tool .ref-note-screen .amm-voice-add  {
+  display: inline-block; align-self: flex-start; text-align: left; border: none; background: none; padding: 0; cursor: pointer; margin-top: clamp(10px, 1.6vh, 20px); font-family: inherit; font-weight: 300; letter-spacing: -0.02em; font-size: clamp(20px, 2.4vw, 28px); color: var(--fg-40, rgba(255,255,255,0.40)); transition: color 0.18s ease; }
+#referral-tool .ref-note-screen .amm-voice-add:hover { color: var(--fg, #fff);  }
+#referral-tool .ref-note-screen .amm-voice { cursor: pointer;  }
+#referral-tool .ref-note-screen .cc-recbar { gap: clamp(14px, 2.4vw, 24px); align-items: center;  }
+#referral-tool .ref-note-screen .cc-recbar .rec-live { gap: clamp(12px, 2vw, 20px);  }
+#referral-tool .ref-note-screen .cc-recbar .rec-live .wave { height: clamp(40px, 6vw, 72px); gap: clamp(3px, 0.5vw, 6px);  }
+#referral-tool .ref-note-screen .cc-recbar .rec-live .wave i  {
+  width: clamp(3px, 0.45vw, 6px); min-width: clamp(3px, 0.45vw, 6px); max-width: clamp(3px, 0.45vw, 6px); border-radius: 2px; }
+#referral-tool .ref-note-screen .cc-recbar .rec-elapsed { font-size: clamp(16px, calc(12px + 1vw), 26px);  }
+#referral-tool .ref-note-screen .cc-recbar .icon-btn { width: clamp(44px, 6vw, 68px); height: clamp(44px, 6vw, 68px);  }
+#referral-tool .ref-note-screen .cc-recbar .icon-btn svg { width: clamp(26px, 4vw, 44px); height: clamp(26px, 4vw, 44px);  }
+#referral-tool .ref-done  {
+  position: fixed; right: clamp(20px, 4vw, 44px); bottom: clamp(18px, 3.5vw, 36px); z-index: 40; border: none; background: none; cursor: pointer; font-family: inherit; color: var(--fg, #fff); font-weight: 400; letter-spacing: -0.02em; font-size: clamp(20px, 2.4vw, 28px); padding: 2px; animation: ccBlink 1.1s steps(2, start) infinite; }
+#referral-tool .ref-done.is-saved { animation: none; color: var(--fg-40, rgba(255,255,255,0.40)); cursor: default;  }
+@media (prefers-reduced-motion: reduce)  {
+  #referral-tool .flow-stack { animation: none;  }  }
+
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Smart typography — measure caps + break hygiene. Fluid one-line fit for
+   names / giant nowrap lines lives in vendor/smart-type.js. Appended last so
+   these win on source order at equal specificity. No new visual chrome.
+   ═══════════════════════════════════════════════════════════════════════ */
+#referral-tool .ref-note-screen .ref-msg .text,
+#referral-tool .ref-note-screen .ref-msg .transcript,
+#referral-tool .ref-note-screen .amm-text {
+  max-width: 20ch !important; overflow-wrap: break-word; }

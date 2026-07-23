@@ -1,0 +1,74 @@
+/* ───────────────────────────────────────────────────────────────────────────
+   responsive.css — Alia FLUID scale (full-bleed at every size).
+
+   No breakpoints, no jumps. Every scaling property uses clamp() so the whole
+   surface — messages, media, voice, composer, nav, typing — grows CONTINUOUSLY
+   with the viewport, from a mobile floor (≈384px viewport) to a desktop ceiling
+   (≈1344px viewport). Below 384 it pins to the mobile value; above 1344 it pins
+   to the desktop value.
+
+   Each clamp is built as:
+     clamp(MOBILE, calc((1.4·MOBILE − 0.4·DESKTOP)px + ((DESKTOP−MOBILE)/9.6)vw), DESKTOP)
+   so the linear (vw) middle term equals MOBILE at 384px and DESKTOP at 1344px.
+
+   MOBILE values are the component bases (messages.css / voice.css); DESKTOP values are the former ≥1200 tier. Media max-
+   widths live here (the inline caps were removed from the components).
+   ─────────────────────────────────────────────────────────────────────────── */
+
+/* ═══ Identity column ═══════════════════════════════════════════════════════ */
+.avatar-col { width: clamp(58px, calc(37.2px + 5.417vw), 110px); }
+.avatar { width: clamp(52px, calc(34.4px + 4.583vw), 96px); height: clamp(52px, calc(34.4px + 4.583vw), 96px); }
+.avatar-sticky { align-items: flex-start; position: static; top: auto; }
+.reply .avatar { width: clamp(36px, calc(24.8px + 2.917vw), 64px); height: clamp(36px, calc(24.8px + 2.917vw), 64px); }
+.col-footer { padding-left: clamp(66px, calc(45.2px + 5.417vw), 118px); }
+
+/* ═══ Type ══════════════════════════════════════════════════════════════════ */
+.name { font-size: clamp(13px, calc(11px + 0.52vw), 18px); }
+/* Text rides a constant ~56px step INSIDE the media column (media fills the
+   column; text is column-minus-step), then pins at its ceiling. Always lands
+   shorter than media, longer than the link preview, at every width. */
+.text { font-size: clamp(14px, calc(10px + 1.04vw), 24px); line-height: 1.5; max-width: clamp(232px, calc(100vw - 130px), 660px); }
+.reply .text { font-size: clamp(13px, calc(10.6px + 0.63vw), 19px); line-height: 1.45; max-width: clamp(168px, calc(100vw - 168px), 380px); }
+.link-ref { font-size: clamp(11px, calc(9.4px + 0.42vw), 15px); max-width: clamp(200px, calc(96px + 27.083vw), 460px); }
+.reply .link-ref { max-width: clamp(160px, calc(88px + 18.75vw), 340px); }
+.edited { font-size: clamp(11px, calc(10.2px + 0.21vw), 13px); }
+.act-btn { font-size: clamp(12px, calc(11.2px + 0.21vw), 14px); }
+
+/* ═══ Media ═════════════════════════════════════════════════════════════════ */
+/* Media FILLS its column on mobile/tablet (calc(100vw-74px) always exceeds the
+   column, so width:100% clamps it to the column edge), then settles to a fixed
+   cap on desktop. Editorial images only — link previews + gifs stay capped. */
+.img-with-save { max-width: clamp(280px, calc(100vw - 74px), 720px); }
+.imgs-stack { max-width: clamp(280px, calc(100vw - 74px), 720px); }
+/* A link preview is bounded by HEIGHT (a small packshot), never by width — so it
+   stays clearly smaller than editorial gallery media. Width follows the image,
+   left-aligned; a max-width still guards very wide landscape scrapes. */
+.img-wrap.link-img { width: fit-content; max-width: clamp(200px, calc(96px + 27.08vw), 460px); }
+.img-wrap.link-img img { width: auto; height: auto; max-height: clamp(160px, calc(120px + 10.42vw), 260px); }
+.gif-wrap { max-width: clamp(180px, calc(100px + 20.83vw), 380px); }
+.reply .img-wrap { max-width: clamp(180px, calc(100vw - 74px), 420px); }
+/* the save-button parent must track the reply image width, or the button
+   (anchored to its right edge) floats out into the gutter. */
+.reply .img-with-save { max-width: clamp(180px, calc(100vw - 74px), 420px); }
+.reply .img-wrap.link-img { max-width: clamp(160px, calc(88px + 18.75vw), 340px); }
+
+/* ═══ Voice (canonical component — feed + composer atom) ════════════════════ */
+.voice { max-width: clamp(280px, calc(48px + 60.42vw), 860px); gap: clamp(10px, calc(8.4px + 0.42vw), 14px); }
+.voice-row { gap: clamp(14px, calc(11.6px + 0.63vw), 20px); }
+.play-btn { width: clamp(28px, calc(16.8px + 2.92vw), 56px); height: clamp(28px, calc(16.8px + 2.92vw), 56px); }
+.play-btn svg { width: clamp(18px, calc(11.6px + 1.67vw), 38px); height: clamp(18px, calc(11.6px + 1.67vw), 38px); }
+.wave { height: clamp(26px, calc(14px + 3.13vw), 56px); }
+.wave i { width: clamp(1.6px, calc(1.04px + 0.146vw), 3px); min-width: clamp(1.6px, calc(1.04px + 0.146vw), 3px); max-width: clamp(1.6px, calc(1.04px + 0.146vw), 3px); }
+.dur { font-size: clamp(10px, calc(8.4px + 0.42vw), 14px); }
+.voice .transcript { font-size: clamp(14px, calc(10px + 1.04vw), 24px); line-height: 1.5; }
+.av-cap { font-size: clamp(14px, calc(10px + 1.04vw), 24px); line-height: 1.5; }
+
+/* ═══ Composer ══════════════════════════════════════════════════════════════ */
+.composer { padding-top: clamp(12px, calc(9.6px + 0.63vw), 18px); padding-left: clamp(14px, calc(6.4px + 1.88vw), 32px); padding-right: clamp(14px, calc(6.4px + 1.88vw), 32px); padding-bottom: clamp(16px, calc(11.2px + 1.25vw), 28px); gap: clamp(8px, calc(4.8px + 0.83vw), 16px); }
+.composer-input { font-size: clamp(14px, calc(11.6px + 0.63vw), 20px); line-height: clamp(26px, calc(21.6px + 1.04vw), 36px); min-height: clamp(26px, calc(21.6px + 1.04vw), 36px); }
+.stream { font-size: clamp(14px, calc(11.6px + 0.63vw), 20px); line-height: clamp(26px, calc(21.6px + 1.04vw), 36px); }
+.icon-btn { width: clamp(32px, calc(23.2px + 2.29vw), 54px); height: clamp(32px, calc(23.2px + 2.29vw), 54px); }
+.icon-btn svg { width: clamp(22px, calc(16.8px + 1.35vw), 35px); height: clamp(22px, calc(16.8px + 1.35vw), 35px); }
+.rec-live .wave { height: clamp(26px, calc(18.8px + 1.88vw), 44px); }
+.rec-elapsed { font-size: clamp(13px, calc(12.2px + 0.21vw), 15px); }
+.rec-dot { width: clamp(6px, calc(3.5px + 0.63vw), 12px); height: clamp(6px, calc(3.5px + 0.63vw), 12px); }
